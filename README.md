@@ -1,8 +1,8 @@
-# tempoSig
-Single-Base Substitution Mutational Signature Inference for WES and MSK-IMPACT
+i# DeepSig
+Machine Learning-based Mutational Signature Exposure Inference for WES and MSK-IMPACT data
 
 ## Overview
-**tempoSig** contains single-base substitution (SBS) mutational signature inference tools intended for 
+**DeepSig** contains single-base substitution (SBS) mutational signature inference tools intended for 
 data sets derived from non-WGS (e.g., WES or MSK-IMPACT) platforms.
 It combines a maximum likelihood-based algorithm, fitting mutational catalogs to proportions of a pre-defined 
 reference signature set, with deep learning (DL)-based models making binary calls of the presence/absence of
@@ -13,22 +13,18 @@ by the total mutation count of each sample.
 For single samples or a small cohort derived from WES or MSK-IMPACT, the main workflow comprises refitting
 and DL-filtering. Input data are of the form of catalog matrix:
 
-Mutation context | Tumor Sample Barcode 1 | Tumor Sample Barcode 2
----------------- | ---------------------- | ----------------------
-A[C>A]A          |                      0 |                      1
-A[C>A]C          |                      3 |                      0
-A[C>A]G          |                      2 |                      5
-A[C>A]T          |                      0 |                      2
-C[C>A]A          |                      0 |                      0
-C[C>A]C          |                      1 |                      1
-C[C>A]G          |                      0 |                      0
-C[C>A]T          |                      1 |                      1
+Sample_ID              | A[C>A]A | A[C>A]C  | A[C>A]G | A[C>A]T | C[C>A]A  
+---------------------- | ------- | -------- | ------- | ------- | --------
+Tumor Sample Barcode 1 |     0   |     3    |    5    |    0    |    0  
+Tumor Sample Barcode 2 |     2   |     1    |    1    |    2    |    0 
+Tumor Sample Barcode 3 |     5   |     0    |    0    |    1    |    1 
 
-Mutation context is the set of categories to which mutation data from sequencing experiments have been classified. Trinucleotide contexts shown above are the pyrimidine bases before and after mutation flanked by upstream and downstream nucleotides (96 in total). Each column corresponding to **Tumor_Sample_Barcode** contains non-negative counts of single nucleotide variants (SNVs). This trinucleotide matrix can be generated using the utility function [maf2cat2] or [maf2cat3]. MAF files can be generated from VCF files using [vcf2maf](https://github.com/mskcc/vcf2maf).
+
+Row names are the the set of categories to which mutation data from sequencing experiments have been classified (**Sample_ID** column name is absent in the actual file). These trinucleotide contexts are the pyrimidine bases before and after mutation flanked by upstream and downstream nucleotides (96 in total). Each row corresponding to **Tumor_Sample_Barcode** contains non-negative counts of single nucleotide variants (SNVs). This trinucleotide matrix can be generated using the utility function [maf2cat2] or [maf2cat3]. MAF files can be generated from VCF files using [vcf2maf](https://github.com/mskcc/vcf2maf). Note: the output from [maf2cat3] needs to be transposed so that rows contain samples.
 
 The function
 
-    DL.call(catalog, cancer.type, model.path, ref.sig, threshold)
+    DL.call(catalog, cancer.type, model.path, ref.sig, threshold, mbins)
 
 will find the pre-trained model corresponding to **cancer.type** and perform signature fitting and filtering.
 Except for **catalog** and **cancer.type**, other arguments will default to those for pre-trained models if 
@@ -38,8 +34,8 @@ cancer.type    | ICGC/PCAWG | TCGA
 -------------- | ---------- | ------
 breast         | Breast     | BRCA
 ovarian        | Ovary      | OV
-prostate       | Prostate    | PRAD
-pancreatic     | Pancraeas  | PAAD
+prostate       | Prostate   | PRAD
+pancreas       | Pancraeas  | PAAD
 bladder        | Bladder    | BLCA
 colorectal     | Colorectal | COAD
 melanoma       | Skin       | SKCM
@@ -49,6 +45,7 @@ head_neck      | Head_neck  | HNSC
 renal_cell     | Kidney     | KICH/KIRC/KIRP
 endometrial    | Uterus     | UCEC
 germ_cell      |            | TGCT
+pan_cancer     |            |
 
 As an example, the following script will generate outputs for the TCGA-OV samples using **ovarian** pre-trained model:
 
@@ -185,4 +182,3 @@ If you do not want to use R-interface, a command-line script is available, assum
 ### De novo inference
 
 Under construction.
-
