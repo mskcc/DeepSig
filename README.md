@@ -1,4 +1,4 @@
-i# DeepSig
+# DeepSig
 Machine Learning-based Mutational Signature Exposure Inference for WES and MSK-IMPACT data
 
 ## Overview
@@ -182,3 +182,4 @@ If you do not want to use R-interface, a command-line script is available, assum
 ### De novo inference
 
 Under construction.
+
