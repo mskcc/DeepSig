@@ -134,9 +134,9 @@ See the tensorflow install page for further information.
 Dependencies include [Rcpp](https://cran.r-project.org/package=Rcpp), [gtools](https://cran.r-project.org/package=gtools), [argparse](https://cran.r-project.org/package=argparse), [coneproj](https://cran.r-project.org/package=coneproj),
 and [reticulate](https://cran.r-project.org/package=reticulate).
 
-Installing **tempoSig** via
+Installing **DeepSig** via
 
-    > devtools::install_github("mskcc/tempoSig_DL")
+    > devtools::install_github("mskcc/DeepSig")
 
 will also install dependencies.
 
