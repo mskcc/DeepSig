@@ -1,0 +1,12 @@
+#!/bin/bash
+#BSUB -J model_1a_SBS40
+#BSUB -n 1
+#BSUB -W 5:00
+#BSUB -R rusage[mem=32]
+#BSUB -o %J.stdout
+#BSUB -e %J.stderr
+
+cd $LS_SUBCWD
+
+python3 dl1_eval.py
+python3 dl1_retrain.py

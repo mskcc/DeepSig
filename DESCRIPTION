@@ -1,0 +1,20 @@
+Package: DeepSig
+Type: Package
+Title: Machine Learning-Based Mutational Signature Exposure Inference for WES and MSK-IMPACT data
+Version: 0.9.0
+Author: Jun Woo
+Maintainer: Jun Woo <wooh@mskcc.org>
+Depends: R (>= 3.6.0)
+Imports: gtools, Rcpp (>= 0.12.16), utils, argparse, coneproj, data.table, RcppEigen, reticulate
+Description: Infers mutation signature exposures from mutation catalog data using
+    cancer-specific and pan-cancer reference signature lists via deep learning-trained models. 
+    Also includes de novo extraction routines. Suitable for analysis of catalogs derived from
+    limited mutation count data such as whole exome sequencing or MSK-IMPACT.
+License: GPL (>= 2)
+LinkingTo: Rcpp, RcppEigen
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3
+NeedsCompilation: yes
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
