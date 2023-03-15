@@ -9,7 +9,7 @@
 #' @param progress.bar Progress bar
 #' @export
 
-DL.call <- function(catalog, cancer.type = 'breast', model.path = NA, ref.sig = NA, threshold = NA, verbose = 1,
+DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.sig = NA, threshold = NA, verbose = 1,
                     mbins = NA, progress.bar = TRUE, min.attr = 1, min.attr.pole = 10, alpha = NA){
   
   tf <- reticulate::import('tensorflow')
