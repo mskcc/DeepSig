@@ -5,12 +5,20 @@
 #' @param model.path Directory path for trained models
 #' @param ref.sig File path for reference signatures
 #' @param threshold File path for thresholds
+#' @param min.M Minimum no. of mutations
+#' @param min.attr Mininum attribution
+#' @param min.attr.pole Minimum attribution for POLE signatures
+#' @param alpha False positive rate
 #' @param verbose Verbosity level
 #' @param progress.bar Progress bar
+#' @examples 
+#' data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
+#' 
 #' @export
 
 DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.sig = NA, threshold = NA, verbose = 1,
-                    mbins = NA, progress.bar = TRUE, min.attr = 1, min.attr.pole = 10, alpha = NA){
+                    mbins = NA, progress.bar = TRUE, min.M = 1,
+                    min.attr = 1, min.attr.pole = 10, alpha = NA){
   
   tf <- reticulate::import('tensorflow')
   pd <- reticulate::import('pandas')
@@ -43,12 +51,18 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   else mfile <- model.path
   if(!dir.exists(mfile)) stop(paste0('Model ', mfile, ' could not be found'))
   
-  sid <- rownames(catalog)
-  M <- rowSums(catalog)
+  x0 <- catalog
+  sid0 <- rownames(catalog)
+  M0 <- rowSums(catalog)
+
+  sid.bad <- sid0[M0 < min.M]
+  sid <- sid0[M0 >= min.M]
+  M <- M0[M0 >= min.M]
   nsamp <- length(M)
+  catalog <- catalog[sid,,drop=F]
 
   if(is.na(ref.sig))
-    frefsig <- system.file(paste0('extdata/dlsig/v0.9/', cancer.type, '/refsig.txt'), package = 'DeepSig')
+    frefsig <- system.file(paste0('extdata/dlsig/current/', cancer.type, '/refsig.txt'), package = 'DeepSig')
   else
     frefsig <- ref.sig
   if(!file.exists(frefsig)) stop(paste0(frefsig, ' does not exist'))
@@ -85,8 +99,9 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
 
   for(s in S){
     if(verbose > 0) cat(paste0(s,'...\n'))
-#    fl <- paste0(mfile,'/', s, '/', s, '_1a')
     fl <- paste0(mfile,'/', s, '_1a')
+    if(!dir.exists(fl)) fl <- paste0(mfile,'/',s,'/',s,'_1a')
+    if(!dir.exists(fl)) stop(paste0('Trained model for ',s,' cannot be found'))
     model <- tf$keras.models$load_model(fl)
     pr[, s] <- model$predict(xa, verbose = 0)
     if(!all(is.na(mbins))){
@@ -114,6 +129,21 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   E1[,colnames(E1) %in% pole] <- E1[,colnames(E1) %in% pole]*(A[,colnames(A) %in% pole] >= min.attr.pole)
        
   B <- cbind(E1[,1:2], bcall)
+  pr <- cbind(E1[,1:2], pr)
+  
+  if(length(sid.bad)>0){
+    na <- matrix(NA, nrow=length(sid.bad), ncol=nsig)
+    rownames(na) <- sid.bad
+    colnames(na) <- S
+    E0 <- rbind(E0, cbind(data.frame(sid = sid.bad, M = M0[sid.bad]), na))
+    E0 <- E0[sid0, ]
+    E1 <- rbind(E1, cbind(data.frame(sid = sid.bad, M = M0[sid.bad]), na))
+    E1 <- E1[sid0, ]
+    B <- rbind(B, cbind(data.frame(sid=sid.bad, M = M0[sid.bad], na)))
+    B <- B[sid0, ]
+    pr <- rbind(pr, cbind(data.frame(sid=sid.bad, M = M0[sid.bad], na)))
+    pr <- pr[sid0, ]
+  }
   
   x <- list(exposure.raw = E0, exposure.fltrd = E1, binary.call = B, ref.sig = refsig, score = pr)
   return(x)
