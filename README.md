@@ -49,8 +49,8 @@ pan_cancer     |            |
 
 As an example, the following script will generate outputs for the TCGA-OV samples using **ovarian** pre-trained model:
 
-    > library(tempoSig)
-    > xcat <- read.table(system.file('extdata', 'tcga_ov_xcat.txt', package = 'tempoSig'), header = TRUE, sep = '\t')
+    > library(DeepSig)
+    > xcat <- read.table(system.file('extdata', 'tcga_ov_xcat.txt', package = 'DeepSig'), header = TRUE, sep = '\t')
     > z <- DL.call(catalog = t(xcat), cancer.type = 'ovarian')
     > names(z)
       [1] "exposure.raw"   "exposure.fltrd" "binary.call" "ref.sig"  
