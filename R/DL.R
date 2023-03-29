@@ -13,6 +13,8 @@
 #' @param progress.bar Progress bar
 #' @examples 
 #' data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
+#' z <- DL.call(catalog = t(data), cancer.type = 'nsclc', alpha = 0.05)
+#' head(z$exposure.fltrd)
 #' 
 #' @export
 
@@ -31,12 +33,13 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   
   cancer.type <- tolower(cancer.type) # no upper casing necessary
   known.types <- c('breast', 'ovarian', 'prostate', 'pancreatic', 'bladder','colorectal','germ_cell', 
-                   'melanoma','cns','lung','head_neck','renal_cell','endometrial', 'pan_cancer')
+                   'melanoma','cns','lung','head_neck','renal_cell','endometrial', 'nsclc',
+                   'sclc', 'pan_cancer')
   # default alpha
   alpha0 <- c('breast' = 0.05, 'bladder' = 0.05, 'colorectal' = 0.05, 'endometrial' = 0.05,
               'germ_cell'= 0.05, 'melanoma' = 0.05, 'head_neck' = 0.05, 'ovarian' = 0.05,
-              'prostate' = 0.05, 'pancreas' = 0.05, 'cns' = 0.05, 'lung' = 0.05, 
-              'renal_cell' = 0.05, 'pan_cancer' = 0.05)
+              'prostate' = 0.05, 'pancreas' = 0.05, 'cns' = 0.05, 'nsclc' = 0.05, 
+              'renal_cell' = 0.05, 'pan_cancer' = 0.05, 'sclc' = 0.05)
   
   if(!cancer.type %in% known.types){
     if(is.na(model.path) | is.na(threshold))
@@ -118,7 +121,7 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
 
   if(verbose > 0) cat('Fitting catalogs to ref. sigs...\n')
   b <- DeepSig(data = t(catalog), signat = refsig)
-  b <- extractSig(b, method = 'mle', progress.bar = progress.bar)
+  b <- extractSig(b, method = 'mle', min.tmb = min.M, progress.bar = progress.bar)
   E0 <- cbind(data.frame(sid = sid, M = M), expos(b))
   A <- E0[,-2:-1]*E0$M
   E1 <- E0
