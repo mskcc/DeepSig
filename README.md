@@ -40,7 +40,8 @@ bladder        | Bladder    | BLCA
 colorectal     | Colorectal | COAD
 melanoma       | Skin       | SKCM
 cns            | CNS        | GBM
-lung           | Lung       | LUAD/LUSC
+nsclc          | Lung       | LUAD/LUSC
+sclc           |            |
 head_neck      | Head_neck  | HNSC
 renal_cell     | Kidney     | KICH/KIRC/KIRP
 endometrial    | Uterus     | UCEC
