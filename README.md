@@ -126,9 +126,9 @@ In a Mac,
 
     $ brew install gsl
 
-DL-based filtering requires [tensorflow](https://tensorflow.org/install). In a Mac,
+DL-based filtering requires [tensorflow](https://tensorflow.org/install) and [pandas](https://pandas.pydata.org/getting_started.html). In a Mac,
   
-    $ pip install tensorflow
+    $ pip install tensorflow pandas
 
 See the tensorflow install page for further information.
 
