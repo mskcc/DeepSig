@@ -135,11 +135,12 @@ See the tensorflow install page for further information.
 Dependencies include [Rcpp](https://cran.r-project.org/package=Rcpp), [gtools](https://cran.r-project.org/package=gtools), [argparse](https://cran.r-project.org/package=argparse), [coneproj](https://cran.r-project.org/package=coneproj),
 and [reticulate](https://cran.r-project.org/package=reticulate).
 
-Installing **DeepSig** via
+Because of file size, we currently recommend downloading a source tar.gz file and
+installing **DeepSig** via
 
-    > devtools::install_github("mskcc/DeepSig")
+    > install.packages('DeepSig_v0.9.11.tar.gz', repos = NULL, dependencies = TRUE)
 
-will also install dependencies.
+which will also install dependencies.
 
 ### Catalog matrix generation
 
