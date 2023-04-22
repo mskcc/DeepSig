@@ -258,34 +258,34 @@ readMAFforcat <- function(maf){
 #' @param label New signature labels
 #' @export
 #' 
-reorderSig <- function(object, order, label = NULL){
+reorderSig <- function(object, annotation){
   
-  if(!is(object, 'DeepSig')) stop('Object must of a DeepSig object')
+  if(!is(object, 'DeepSig')) stop('Not a DeepSig object')
   sig <- signat(object)
   S <- colnames(sig)
   K <- NCOL(sig)
-  if(length(order) != K | sum(duplicated(order)) > 0) stop('Invalid order')
-  if(!is.null(label) & (length(label)!=K | sum(duplicated(label)) > 0))
-    stop('Invalid label')
+  if(length(annotation) != K | sum(duplicated(annotation)) > 0) 
+    stop('Invalid annotation')
+  if(is.null(names(annotation))) stop('Annotation not named')
   
+  order <- match(annotation, S)
+  label <- names(annotation)
   signat(object) <- sig[, order, drop=F]
-  expos(object) <- expos(object)[order,, drop=F]
-  if(!is.null(label))
-    colnames(signat(object)) <- rownames(expos(object)) <- label
+  expos(object) <- expos(object)[order, , drop=F]
+  colnames(signat(object)) <- rownames(expos(object)) <- label
   if(!is.null(misc(object)$dW)){
     for(i in seq_along(misc(object)$dW)){
       if(ncol(misc(object)$dW[[i]])!=length(order)) next()
       misc(object)$dW[[i]] <- misc(object)$dW[[i]][, order, drop=F]
-      if(!is.null(label)) colnames(misc(object)$dW[[i]]) <- label
+      colnames(misc(object)$dW[[i]]) <- label
     }
   }
   if(!is.null(misc(object)$dH)){
     for(i in seq_along(misc(object)$dH)){
       if(nrow(misc(object)$dH[[i]])!=length(order)) next()
       misc(object)$dH[[i]] <- misc(object)$dH[[i]][order, ,drop=F]
-      if(!is.null(label)) rownames(misc(object)$dH[[i]]) <- label
+      rownames(misc(object)$dH[[i]]) <- label
     }
   }
-
   return(object)
 }

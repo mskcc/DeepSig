@@ -4,7 +4,7 @@
 \alias{reorderSig}
 \title{Rearrange Signatures in Object}
 \usage{
-reorderSig(object, order, label = NULL)
+reorderSig(object, annotation)
 }
 \arguments{
 \item{object}{\code{DeepSig} object}

@@ -6,13 +6,14 @@
 \usage{
 DL.call(
   catalog,
-  cancer.type = "breast",
+  cancer.type = "pan_cancer",
   model.path = NA,
   ref.sig = NA,
   threshold = NA,
   verbose = 1,
   mbins = NA,
   progress.bar = TRUE,
+  min.M = 1,
   min.attr = 1,
   min.attr.pole = 10,
   alpha = NA
@@ -33,7 +34,21 @@ in columns}
 \item{verbose}{Verbosity level}
 
 \item{progress.bar}{Progress bar}
+
+\item{min.M}{Minimum no. of mutations}
+
+\item{min.attr}{Mininum attribution}
+
+\item{min.attr.pole}{Minimum attribution for POLE signatures}
+
+\item{alpha}{False positive rate}
 }
 \description{
 Use DL-trained Model to predict HRD
+}
+\examples{
+data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
+z <- DL.call(catalog = t(data), cancer.type = 'nsclc', alpha = 0.05)
+head(z$exposure.fltrd)
+
 }

@@ -7,7 +7,7 @@
 kstar(object, df = NULL, BF.threshold = 3, type = 1, m = 96)
 }
 \arguments{
-\item{object}{\code{scNMFSet} object containing factorization output, or 
+\item{object}{\code{DeepSig} object containing factorization output, or 
 data frame containing the rank-evidence profile.}
 
 \item{df}{Degrees of freedom for split fit. Upper bound is the total number of

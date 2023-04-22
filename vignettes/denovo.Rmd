@@ -1,0 +1,107 @@
+---
+title: "DeepSig: Machine Learning-based Mutational Signature Inference for WES and MSK-IMPACT  data"
+output: 
+  html_document:
+    toc: true
+    toc_float: true
+    number_sections: true
+bibliography: refs.bib
+vignette: >
+  %\VignetteIndexEntry{DeepSig}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# De novo inference
+```{r load, eval=TRUE}
+library(DeepSig)
+```
+
+We illustrate de novo inferences using TCGA-BRCA catalog data:
+```{r tcga-brca, eval=TRUE}
+brca <- read.table(system.file('extdata', 'tcga_brca_mutect_catalog.txt',
+                               package = 'DeepSig'))
+tcga <- DeepSig(data = brca)
+tcga
+```
+
+## Number of signatures
+`DeepSig` provides a way to determine the most likely number $K$ of signatures present 
+using a Bayesian marginal likelihood method. To do this, scan a range of $K$ values via
+```{r bnmf0, echo = TRUE, eval = FALSE}
+set.seed(152)
+tscan <- extractSig(tcga, method = 'bnmf', Kmin = 2, Kmax = 10, nrun = 10, progress.bar = TRUE)
+```
+
+```{r bnmf, echo = FALSE, eval = TRUE}
+set.seed(152)
+tscan <- extractSig(tcga, method = 'bnmf', Kmin = 2, Kmax = 10, nrun = 10, progress.bar = FALSE)
+```
+
+```{r bnmf1, fig.width=5, fig.height=4, fig.fullwidth = FALSE}
+me <- misc(tscan)$measure
+me
+plot(me, type = 'b', las = 1, bty = 'n')
+```
+
+Note that individual runs consist of $K$ values scanned from `Kmin` (default 2) to `Kmax`. 
+Often, increasing the size of signature set by one will result in redundant signatures beyond a certain $K$ value. If this occurrs, the scan will stop and print this upper bound `Kmax`. 
+In the example above, this upper bound is often smaller than the maximum 10.
+
+## Decomposition under optimal K
+The LML (log marginal likelihood) plot above suggests a minimal $K = 5$.
+It is then recommended to re-run the de novo inference using `method = "nmf"`
+under `K = 5`:
+
+```{r bnmf2, echo = TRUE, eval = FALSE}
+tcga <- extractSig(tcga, method = 'nmf', K = 5, nrun = 100, progress.bar = TRUE))
+```
+```{r bnmf2_2, echo = FALSE, eval = TRUE}
+tcga <- extractSig(tcga, method = 'nmf', K = 5, nrun = 100, progress.bar = FALSE)
+sig <- signat(tcga)
+head(sig)
+```
+
+## Signature annotation
+The main object of interest within `tcga` is the de novo signature set that
+can be extracted as `signat(tcga)`. We compute a cosine similarity matrix
+between de novo and reference signatures (COSMIC v3)
+```{r bnmf3, eval = TRUE}
+cs <- denovoCosim(sig = sig, ref.sig = 'cosmic')
+cs[,1:5]
+```
+
+There is a customized heatmap for displaying `cs`:
+```{r bnmf}, fig.width=10, fig.height=10, fig.fullwidth = TRUE}
+csHeatmap(cs)
+```
+
+In the above, we computed the cosine similarity matrix of the 5 de novo signatures with the COSMIC v3 set.
+The heatmap indicates that `S1-S5` correspond to SBS3 (HRD), SBS2.13 (APOBEC), SBS1 (aging), 
+SBS10 (POLE), and SBS6 (MMR), respectively. To faciliate further analyses, it is
+convenient to re-label de novo signatures based on these annotations:
+```{r lsap, eval = TRUE}
+annotation <- c('SBS_1'='S3','SBS_2.13'='S2','SBS_3'='S1','SBS_6'='S5','SBS_10'='S4')
+tcga2 <- reorderSig(tcga, annotation = annotation)
+head(signat(tcga2))
+```
+The function `reorderSig` reorders the signatures of the object in the sequence of
+`annotation` parameter and renames them according to `names(annotation)`.
+
+We now examine the actual shape simlarity of de novo and reference signatures:
+```{r sigplot, eval = TRUE, fig.width=10, fig.height=10, fig.fullwidth = TRUE}
+denovoProfiles(tcga2, ref.sig = 'cosmic')
+```
+The left-most column shows de novo signatures and the second and third columns 
+show the reference signatures with the top and second-highest cosine similarity
+overlaps (in parentheses) with de novo signatures. Note that `SBS_2` is in 
+fact a composite of `SBS2` and `SBS13`, which is a very common occurence; 
+the two APOBEC signatures rarely are seen separately in non-WGS samples. The 
+same is true for `SBS_10`, which is a composite of `SBS10a` and `SBS10b`.
