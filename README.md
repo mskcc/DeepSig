@@ -116,6 +116,36 @@ The raw exposure proportions are inferred by maximum likelihood estimation using
 which have been extracted from de novo inference and/or selected from publicly available repositories, including
 [COSMIC](https://cancer.sanger.ac.uk/cosmic/signatures) and [signal](https://signal.mutationalsignatures.com/).
 
+## Standalone script
+If you are not interested in interactive usages with more flexibility and functionality, or want to use **DeepSig** 
+as a part of a pipeline, use the command-line script [deepsig.R](https://github.com/mskcc/deepsig/blob/master/exec/deepsig.R). 
+If you installed **DeepSig** as an R package using `install_github`, find the path via
+```Rscript
+system.file('exec', 'deepsig.R', package = 'deepsig')
+```
+   
+   
+If you cloned the repository, the file is located at the `./exec` subdirectory of the github main directory. We denote this package directory path as `PKG_PATH`. The command syntax is
+```shell
+$ $PKG_PATH/exec/tempoSig.R -h
+usage: ./deepsig.R [-h] -i CATALOG -o OUTPUT [-c CANCER TYPE] [-a ALPHA] [-q]
+
+Extract mutational signatures using the DeepSig algorithm
+
+options:
+  -h, --help            show this help message and exit
+  -i CATALOG, --input CATALOG
+                        input catalog data file
+  -o OUTPUT, --output OUTPUT
+                        output directory
+  -c CANCER TYPE, --cancer-type CANCER TYPE
+                        use a model for the specified cancer type
+  -a ALPHA, --alpha ALPHA
+                        set false discovery rate
+  -q, --quiet           Run quietly
+```
+Only two arguments are mandatory: `CATALOG` and `OUTPUT`, each specifying the paths of input catalog data and output directory to be written to. The input catalog is a tab-delimited text file with headers. See [tcga-brca_catalog.txt](https://github.com/mskcc/DeepSig/blob/master/inst/extdata/tcga-brca_catalog.txt) for a catalog file example
+
 ## Installation
 
 Compilation requires GNU Scientific Library [(GSL)](https://www.gnu.org/software/gsl/). In Ubuntu Linux,
