@@ -20,6 +20,28 @@ trinucleotides <- function(nt = 'ACGT', brackets = TRUE, arrows = TRUE){
   return(w)
 }
 
+#' Pentanucleotide labels
+#'
+#' @export
+pentanucleotides <- function(nt = 'ACGT', brackets = TRUE, arrows = TRUE){
+  
+  nt2 <- strsplit(nt, split='')[[1]]
+  pyr <- nt2[nt2 %in% c('C', 'T')]
+  w <- expand.grid(nt2, pyr, stringsAsFactors = FALSE)
+  w <- w[,c(2,1)]
+  w <- w[w[, 1]!=w[,2],]
+  sp <- ifelse(arrows, '>', '')
+  wx <- apply(w, 1, function(x){paste(c(x[1], sp, x[2]),collapse='')})
+  
+  z <- expand.grid(nt2, nt2, nt2, nt2, wx, stringsAsFactors = FALSE)
+  z <- z[, c(4, 3, 5, 2, 1)]
+  if(brackets) sp <- c('[',']')
+  else sp <- c('','')
+  w <- apply(z, 1, function(x){paste(c(x[1], x[2], sp[1], x[3], sp[2], x[4], x[5]), collapse = '')})
+  names(w) <- NULL
+  return(w)
+}
+
 #' Dinucleotide labels
 #' 
 #' @export
