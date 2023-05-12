@@ -8,14 +8,18 @@
 #' @export
 denovoCosim <- function(sig, ref.sig = 'cosmic'){
   
-  if(ref.sig=='cosmic'){
-    ref.sig <- read.table(
-      system.file('extdata','cosmic_sigProfiler_SBS_signatures_v3.1.txt', 
+  if(is.character(ref.sig)){
+    if(ref.sig=='cosmic'){
+       ref.sig <- read.table(
+         system.file('extdata','cosmic_sigProfiler_SBS_signatures_v3.1.txt', 
                   package = 'DeepSig'), header = TRUE, sep = '\t')
-  }else if(is.character(ref.sig)){
-    if(!file.exists(ref.sig)) stop(paste0(ref.sig,' does not exist'))
-  } else
-    ref.sig <- read.table(ref.sig, header = TRUE, sep = '\t')
+    }else{
+      if(!file.exists(ref.sig)) stop(paste0(ref.sig,' does not exist'))
+      ref.sig <- read.table(ref.sig, header = TRUE, sep = '\t')
+    }
+  }
+  if(!class(ref.sig) %in% c('data.frame','matrix')) 
+    stop('ref.sig not of correct type')
   
   if(NROW(sig)!=96) stop('Inut sig does not have 96 rows')
   

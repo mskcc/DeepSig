@@ -86,11 +86,11 @@ csHeatmap(cs)
 ```
 
 In the above, we computed the cosine similarity matrix of the 5 de novo signatures with the COSMIC v3 set.
-The heatmap indicates that `S1-S5` correspond to SBS3 (HRD), SBS2.13 (APOBEC), SBS1 (aging), 
-SBS10 (POLE), and SBS6 (MMR), respectively. To faciliate further analyses, it is
+The heatmap indicates that `S1-S5` correspond to SBS3 (HRD), SBS10 (POLE), SBS6 (MMR), SBS1(aging), and
+SBS2.13 (APOBEC), respectively. To faciliate further analyses, it is
 convenient to re-label de novo signatures based on these annotations:
 ```{r lsap, eval = TRUE}
-annotation <- c('SBS_1'='S3','SBS_2.13'='S2','SBS_3'='S1','SBS_6'='S5','SBS_10'='S4')
+annotation <- c('SBS_1'='S4','SBS_2.13'='S5','SBS_3'='S1','SBS_6'='S3','SBS_10'='S2')
 tcga2 <- reorderSig(tcga, annotation = annotation)
 head(signat(tcga2))
 ```
