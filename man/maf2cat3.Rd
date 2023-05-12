@@ -9,6 +9,7 @@ maf2cat3(
   ref.genome,
   fix.chr = TRUE,
   remove.duplicates = TRUE,
+  pentanucleotides = FALSE,
   progress.bar = TRUE
 )
 }
@@ -20,6 +21,8 @@ maf2cat3(
 \item{fix.chr}{Modify chromosome names into \code{chr1, chr2, ...} for \code{ref.genome}}
 
 \item{remove.duplicates}{Remove duplicate entries}
+
+\item{pentanucleotides}{Use 2 up/downstream patterns}
 
 \item{progress.bar}{Display progress bar}
 }
