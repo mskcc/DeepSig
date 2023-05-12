@@ -133,6 +133,7 @@ filterExposure <- function(object, alpha = 0.05, attribution = TRUE){
 #' @param ref.genome Reference genome of class \code{BSgenome}
 #' @param fix.chr Modify chromosome names into \code{chr1, chr2, ...} for \code{ref.genome}
 #' @param remove.duplicates Remove duplicate entries
+#' @param pentanucleotides Use 2 up/downstream patterns
 #' @param progress.bar Display progress bar
 #' @return Catalog matrix
 #' @examples 
@@ -142,8 +143,8 @@ filterExposure <- function(object, alpha = 0.05, attribution = TRUE){
 #' head(x)
 #' 
 #' @export
-maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE,
-                     progress.bar = TRUE){
+maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE, 
+                     pentanucleotides = FALSE, progress.bar = TRUE){
   
   if(is(maf, 'character')){
     if(!file.exists(maf)) stop(paste0('File ', maf, ' does not exist'))
@@ -177,7 +178,10 @@ maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE,
   if(progress.bar)
     pb <- txtProgressBar(style = 3)
 
-  nt <- trinucleotides()
+  if(pentanucleotides)
+    nt <- pentanucleotides()
+  else
+    nt <- trinucleotides()
   tsb <- unique(maf$Tumor_Sample_Barcode)
   nsample <- length(tsb)
   xcat <- matrix(0, nrow = length(nt), ncol = nsample)
@@ -198,18 +202,38 @@ maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE,
     if(as.character(ref.alleles) != paste0(dat$Reference_Allele, collapse = ''))
       stop('Ref. alleles in data and ref.genome do not match')
     
-    ref.tri <- matrix(NA, nrow = m, ncol = 4)
-    ref.tri[, 2] <- dat$Reference_Allele
-    ref.tri[, 3] <- dat$Tumor_Seq_Allele2
-    ref.tri[, 1] <- strsplit(as.character(rchr[pos - 1]), split = '')[[1]]
-    ref.tri[, 4] <- strsplit(as.character(rchr[pos + 1]), split = '')[[1]]
+    if(pentanucleotides){
+      ref.tri <- matrix(NA, nrow = m, ncol = 6)
+      ref.tri[, 3] <- dat$Reference_Allele
+      ref.tri[, 4] <- dat$Tumor_Seq_Allele2
+      ref.tri[, 1] <- strsplit(as.character(rchr[pos - 2]), split = '')[[1]]
+      ref.tri[, 2] <- strsplit(as.character(rchr[pos - 1]), split = '')[[1]]
+      ref.tri[, 5] <- strsplit(as.character(rchr[pos + 1]), split = '')[[1]]
+      ref.tri[, 6] <- strsplit(as.character(rchr[pos + 2]), split = '')[[1]]
+    }
+    else{
+      ref.tri <- matrix(NA, nrow = m, ncol = 4)
+      ref.tri[, 2] <- dat$Reference_Allele
+      ref.tri[, 3] <- dat$Tumor_Seq_Allele2
+      ref.tri[, 1] <- strsplit(as.character(rchr[pos - 1]), split = '')[[1]]
+      ref.tri[, 4] <- strsplit(as.character(rchr[pos + 1]), split = '')[[1]]
+    }
     
     purines <- ref.tri[, 2] %in% c('A', 'G')
-    for(i in seq(4))
+    for(i in seq(NCOL(ref.tri)))
       ref.tri[purines, i] <- cmplmnt[ref.tri[purines, i]]
-    ref.tri[purines, c(1, 4)] <- ref.tri[purines, c(4, 1)] # got to reverse the +-1 position
-    ref.tri <- apply(ref.tri, 1, 
-                     function(x){paste0(x[1], '[', x[2], '>', x[3], ']', x[4], collapse = '')})
+    if(pentanucleotides){  # got to reverse the +-1/2 position
+      ref.tri[purines, c(1, 6)] <- ref.tri[purines, c(6, 1)]
+      ref.tri[purines, c(2, 5)] <- ref.tri[purines, c(5, 2)]
+      ref.tri <- apply(ref.tri, 1, 
+                       function(x){paste0(x[1], x[2], '[', x[3], '>', x[4], ']', 
+                                          x[5], x[6], collapse = '')})
+    } else{
+      ref.tri[purines, c(1, 4)] <- ref.tri[purines, c(4, 1)]
+      ref.tri <- apply(ref.tri, 1, 
+                       function(x){paste0(x[1], '[', x[2], '>', x[3], ']', x[4], collapse = '')})
+    }
+    
     
     cnt <- as.matrix(table(ref.tri, dat$Tumor_Sample_Barcode))
     cnt <- cnt[rownames(cnt) %in% nt, , drop = F]  # discard mutation types not in 96 (eg., N[C>T]A)
