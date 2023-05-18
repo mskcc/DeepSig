@@ -18,10 +18,13 @@ csHeatmap(
   legend = NA,
   rescale = FALSE,
   lwd = 0.5,
-  col.break = 30
+  col.break = 30,
+  show.lsap = TRUE
 )
 }
 \arguments{
+\item{show.lsap}{Display LSAP assignment as rectangles}
+
 \item{cs}{Cosine similarity matrix}
 }
 \description{

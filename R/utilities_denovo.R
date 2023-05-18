@@ -30,13 +30,14 @@ denovoCosim <- function(sig, ref.sig = 'cosmic'){
 #' Cosine Similarity Matrix Heatmap
 #'
 #' @param cs Cosine similarity matrix
+#' @param show.lsap Display LSAP assignment as rectangles
 #' @return NULL
 #' @examples
 #' set.seed(135)
 #' @export
 csHeatmap <- function(z, pal=NA, zmin=0, zmax=1, cex=1, ddx=0.03, ddy=0.03, 
                       mar=c(1,1,5,2), grid.col='gray', na.col='gray',legend=NA, 
-                      rescale=FALSE,lwd=0.5, col.break = 30){
+                      rescale=FALSE,lwd=0.5, col.break = 30, show.lsap = TRUE){
   
     if(any(is.na(pal))) pal <- colorRampPalette(RColorBrewer::brewer.pal(9,'OrRd'))(10)
     nstep <- length(pal)
@@ -57,6 +58,9 @@ csHeatmap <- function(z, pal=NA, zmin=0, zmax=1, cex=1, ddx=0.03, ddy=0.03,
     bz <- apply(zs,1:2, function(x){as.integer((x-zmin)/dz)+1})
     bsize.x <- dx*(nstep-bz+2)*ddx
     bsize.y <- dy*(nstep-bz+2)*ddy
+    
+    lsap <- sigLSAP(z)
+    ref.sig <- colnames(z)
       
     for(k in seq(nK)){
       plot(NA, xlim=c(0,1), ylim=c(0,1),xaxt='n',yaxt='n',xlab='',ylab='',bty='n')
@@ -73,9 +77,21 @@ csHeatmap <- function(z, pal=NA, zmin=0, zmax=1, cex=1, ddx=0.03, ddy=0.03,
             ddy <- bsize.y[N-j+1,i1]
             col <- pal[bz[N-j+1,i1]]
           }
-          rect(xleft = xgrid[i], xright = xgrid[i+1], ybottom=ygrid[j], ytop=ygrid[j+1], col='white', border=grid.col,lwd=lwd)
+          if(show.lsap & ref.sig[i1] == lsap[N-j+1]){
+            lty <- 2
+            bwd <- 2*lwd
+            bcol <- 'blue'
+          } else{
+            lty <- 1
+            bwd <- 1*lwd
+            bcol <- grid.col
+          }
+          rect(xleft = xgrid[i], xright = xgrid[i+1], ybottom=ygrid[j], 
+               ytop=ygrid[j+1], col='white', border=bcol,
+               lwd=bwd, lty=lty)
           rect(xleft = xgrid[i] + ddx, xright = xgrid[i+1]- ddx,
-            ybottom=ygrid[j] + ddy, ytop=ygrid[j+1] - ddy, col=col, border=NA,lwd=lwd)
+            ybottom=ygrid[j] + ddy, ytop=ygrid[j+1] - ddy, col=col, 
+            border=NA,lwd=lwd)
         }
       }
       text(x=-dx/5,y=(seq(N)-0.5)*dy, label=rev(rownames(z)),cex=cex, adj=1,xpd=NA)
@@ -112,6 +128,21 @@ csHeatmap <- function(z, pal=NA, zmin=0, zmax=1, cex=1, ddx=0.03, ddy=0.03,
     }
 }
 
+#' Automatic Signature Annotation
+#' 
+#' @param x Signature cosine similarity matrix (rows: de novo, columns = reference)
+#' @return Vector of assigned reference signature names for de novo signatures
+#' @export
+
+sigLSAP <- function(x){
+  
+  S <- rownames(x)
+  Sref <- colnames(x)
+  z <- clue::solve_LSAP(x, maximum = TRUE)
+  z <- Sref[as.integer(z)]
+  names(z) <- S
+  return(z)
+}
 #' Plot De Novo Signatures and Closest Reference Signatures
 #' 
 #' @param object Object whose signature set is to be plotted
