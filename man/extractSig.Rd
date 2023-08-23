@@ -24,8 +24,11 @@ extractSig(
   initializer = "random",
   nboot = 0,
   verbose = 2,
+  pg.pval = FALSE,
+  deviance = FALSE,
   fix.h = NA,
   s2a = NA,
+  pg.measure = "cosim",
   sig.collapse = NA,
   ...
 )
@@ -53,6 +56,8 @@ extractSig(
 \code{c('permutation','lrt','x.permutation')} for permutation resampling of 
 signatures, likelihood ratio test (asymptotic formula), or
 permutation of count data.}
+
+\item{deviance}{Compute deviance for each signature}
 
 \item{...}{Other parameters for \code{denovo} with \code{method = 'hnmf'}}
 }

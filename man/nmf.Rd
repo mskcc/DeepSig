@@ -7,16 +7,22 @@
 nmf(
   catalog,
   sig = NULL,
+  expos = NULL,
   denovo = TRUE,
   K = NULL,
   nrun = 10,
-  verbose = TRUE,
+  verbose = 1,
   progress.bar = FALSE,
   Itmax = 1e+05,
-  Tol = 1e-04,
+  Tol = 1e-05,
   a = 10,
   nprint = 100,
-  useC = FALSE
+  useC = FALSE,
+  alpha = 1,
+  initializer = "random",
+  fix.h = NA,
+  clustering = FALSE,
+  logLik.cut = 0.05
 )
 }
 \arguments{
@@ -37,10 +43,16 @@ only the exposure is fit (requires \code{signat} input).}
 
 \item{Tol}{Tolerance for checking convergence.}
 
+\item{fix.h}{Binary flags for exposure to keep fixed during inference (for deviance estimate)}
+
+\item{clustering}{Perform clustering of local maxima}
+
+\item{logLik.cut}{Log likelihood fractional cutoff with respect to global maximum for clustering}
+
 \item{signat}{Signature matrix}
 }
 \value{
-Object of class \code{tempoSig}.
+Object of class \code{DeepSig}.
 }
 \description{
 Non-negative matrix factorization with either fixed or variable signature matrix.
