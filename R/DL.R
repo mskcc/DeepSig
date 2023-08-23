@@ -18,7 +18,8 @@
 #' 
 #' @export
 
-DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.sig = NA, threshold = NA, verbose = 1,
+DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.sig = NA, threshold = NA, 
+                    mode = 'catalog', verbose = 1,
                     mbins = NA, progress.bar = TRUE, min.M = 1,
                     min.attr = 1, min.attr.pole = 10, alpha = NA){
   
@@ -29,7 +30,8 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   if(is.character(catalog))
     catalog <- read.table(catalog, header=TRUE, sep='\t')
   catalog <- as.matrix(catalog)
-  if(NCOL(catalog)!=96) stop('No. of columns in catalog does not match 96 trinucleotides')
+  if(mode=='catalog')
+    if(NCOL(catalog)!=96) stop('No. of columns in catalog does not match 96 trinucleotides')
   
   cancer.type <- tolower(cancer.type) # no upper casing necessary
   known.types <- c('breast', 'ovarian', 'prostate', 'pancreatic', 'bladder','colorectal','germ_cell', 
@@ -86,6 +88,11 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   S <- colnames(refsig)
   nsig <- length(S)
   
+  if(verbose > 0) cat('Fitting catalogs to ref. sigs...\n')
+  b <- DeepSig(data = t(catalog), signat = refsig)
+  b <- extractSig(b, method = 'mle', min.tmb = min.M, progress.bar = progress.bar)
+  E0 <- cbind(data.frame(sid = sid, M = M), expos(b))
+  
   pr <- matrix(0, nrow = nsamp, ncol = nsig)  # predicted score
   rownames(pr) <- sid
   colnames(pr) <- S
@@ -94,7 +101,13 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   colnames(bcall) <- S
 
   if(verbose > 0) cat('Making binary DL calls...\n')
-  xa <- np$array(catalog)
+  if(mode=='catalog')
+    xa <- np$array(catalog)
+  else{
+    z <- expos(b)
+    z <- z*tmb(b)
+    xa <- np$array(z)
+  }
   
   if(!all(is.na(mbins)))
     mi <- vapply(M, 
@@ -119,10 +132,10 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
     bcall[, s] <- (pr[, s] >= pthr)
   }
 
-  if(verbose > 0) cat('Fitting catalogs to ref. sigs...\n')
-  b <- DeepSig(data = t(catalog), signat = refsig)
-  b <- extractSig(b, method = 'mle', min.tmb = min.M, progress.bar = progress.bar)
-  E0 <- cbind(data.frame(sid = sid, M = M), expos(b))
+#  if(verbose > 0) cat('Fitting catalogs to ref. sigs...\n')
+#  b <- DeepSig(data = t(catalog), signat = refsig)
+#  b <- extractSig(b, method = 'mle', min.tmb = min.M, progress.bar = progress.bar)
+#  E0 <- cbind(data.frame(sid = sid, M = M), expos(b))
   A <- E0[,-2:-1]*E0$M
   E1 <- E0
   E1[,-2:-1] <- E1[,-2:-1]*bcall*(A >= min.attr)

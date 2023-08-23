@@ -151,13 +151,13 @@ sigLSAP <- function(x){
 denovoProfiles <- function(object, ref.sig = 'cosmic'){
   
   if(ref.sig=='cosmic'){
-    refsig <- read.table(
+    ref.sig <- read.table(
       system.file('extdata','cosmic_sigProfiler_SBS_signatures_v3.1.txt', 
                   package = 'DeepSig'), header = TRUE, sep = '\t')
   }else if(is.character(ref.sig)){
     if(!file.exists(ref.sig)) stop(paste0(ref.sig,' does not exist'))
-  } else
-    refsig <- read.table(ref.sig, header = TRUE, sep = '\t')
+    ref.sig <- read.table(ref.sig, header = TRUE, sep = '\t')
+  }
   
   sig <- signat(object)
   cosim <- denovoCosim(sig, ref.sig)
@@ -175,9 +175,9 @@ denovoProfiles <- function(object, ref.sig = 'cosmic'){
     c2 <- names(x)[2]
     sk <- S[k]
     title(main = paste0(sk))
-    sigplot(t(refsig)[c1, ])
+    sigplot(t(ref.sig)[c1, ])
     title(main = paste0(c1, ' (', round(x[c1], digits = 2), ')'))
-    sigplot(t(refsig)[c2, ])
+    sigplot(t(ref.sig)[c2, ])
     title(main = paste0(c2, ' (', round(x[c2], digits = 2), ')'))
   }
   par(old.par)

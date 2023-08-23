@@ -1,7 +1,7 @@
 Package: DeepSig
 Type: Package
 Title: Machine Learning-Based Mutational Signature Inference for WES and MSK-IMPACT data
-Version: 0.9.3
+Version: 0.9.4
 Author: Jun Woo
 Maintainer: Jun Woo <wooh@mskcc.org>
 Depends: R (>= 3.6.0)

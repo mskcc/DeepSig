@@ -9,6 +9,7 @@ maf2cat3(
   ref.genome,
   fix.chr = TRUE,
   remove.duplicates = TRUE,
+  remove.multibases = TRUE,
   pentanucleotides = FALSE,
   progress.bar = TRUE
 )
@@ -21,6 +22,8 @@ maf2cat3(
 \item{fix.chr}{Modify chromosome names into \code{chr1, chr2, ...} for \code{ref.genome}}
 
 \item{remove.duplicates}{Remove duplicate entries}
+
+\item{remove.multibases}{Remove double/tri..base substitutions}
 
 \item{pentanucleotides}{Use 2 up/downstream patterns}
 

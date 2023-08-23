@@ -133,6 +133,7 @@ filterExposure <- function(object, alpha = 0.05, attribution = TRUE){
 #' @param ref.genome Reference genome of class \code{BSgenome}
 #' @param fix.chr Modify chromosome names into \code{chr1, chr2, ...} for \code{ref.genome}
 #' @param remove.duplicates Remove duplicate entries
+#' @param remove.multibases Remove double/tri..base substitutions
 #' @param pentanucleotides Use 2 up/downstream patterns
 #' @param progress.bar Display progress bar
 #' @return Catalog matrix
@@ -143,8 +144,8 @@ filterExposure <- function(object, alpha = 0.05, attribution = TRUE){
 #' head(x)
 #' 
 #' @export
-maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE, 
-                     pentanucleotides = FALSE, progress.bar = TRUE){
+maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE,
+                     remove.multibases = FALSE, pentanucleotides = FALSE, progress.bar = TRUE){
   
   if(is(maf, 'character')){
     if(!file.exists(maf)) stop(paste0('File ', maf, ' does not exist'))
@@ -194,6 +195,7 @@ maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE,
     if(NROW(dat) == 0) next()
     rchr <- ref.genome[[kchr]]
     dat <- dat[dat$Start_Position > 1 & dat$Start_Position < length(rchr), ]
+    dat <- dat[order(dat$Start_Position),]
     m <- NROW(dat)
     if(m ==0) next()
     # subset of variants within reference positions
@@ -201,6 +203,21 @@ maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE,
     ref.alleles <- rchr[pos]
     if(as.character(ref.alleles) != paste0(dat$Reference_Allele, collapse = ''))
       stop('Ref. alleles in data and ref.genome do not match')
+    
+    if(remove.multibases){
+      dat2 <- NULL
+      ds <- dat[,'Start_Position']
+      flag <- rep(FALSE, m)
+      for(i in seq(m)){
+        z <- FALSE
+        if(i > 1) z <- z | abs(ds[i] - ds[i-1])==1
+        if(i < m) z <- z | abs(ds[i] - ds[i+1])==1
+        flag[i] <- z
+      }
+      dat <- dat[!flag,]
+      m <- NROW(dat)
+      pos <- dat$Start_Position
+    } 
     
     if(pentanucleotides){
       ref.tri <- matrix(NA, nrow = m, ncol = 6)

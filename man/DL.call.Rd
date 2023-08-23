@@ -10,6 +10,7 @@ DL.call(
   model.path = NA,
   ref.sig = NA,
   threshold = NA,
+  mode = "catalog",
   verbose = 1,
   mbins = NA,
   progress.bar = TRUE,
