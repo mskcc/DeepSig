@@ -9,7 +9,7 @@ maf2cat3(
   ref.genome,
   fix.chr = TRUE,
   remove.duplicates = TRUE,
-  remove.multibases = TRUE,
+  remove.multibases = FALSE,
   pentanucleotides = FALSE,
   progress.bar = TRUE
 )
