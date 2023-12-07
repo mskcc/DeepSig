@@ -127,7 +127,7 @@ system.file('exec', 'deepsig.R', package = 'deepsig')
    
 If you cloned the repository, the file is located at the `./exec` subdirectory of the github main directory. We denote this package directory path as `PKG_PATH`. The command syntax is
 ```shell
-$ $PKG_PATH/exec/DeepSig.R -h
+$ $PKG_PATH/exec/tempoSig.R -h
 usage: ./deepsig.R [-h] -i CATALOG -o OUTPUT [-c CANCER TYPE] [-a ALPHA] [-q]
 
 Extract mutational signatures using the DeepSig algorithm
@@ -174,7 +174,7 @@ which will also install dependencies.
 
 ### Catalog matrix generation
 
-If a MAF file contains the column `Ref_Tri`, the catalog matrix can be generated using [maf2cat()](https://github.com/mskcc/DeepSig/blob/master/man/maf2cat.Rd) or its command-line wrapper:
+If a MAF file contains the column `Ref_Tri`, the catalog matrix can be generated using [maf2cat()](https://github.com/mskcc/tempoSig/blob/master/man/maf2cat.Rd) or its command-line wrapper:
 
     $ ./maf2cat2.R -h
     usage: ./maf2cat2.R [-h] MAF CATALOG
@@ -188,11 +188,11 @@ If a MAF file contains the column `Ref_Tri`, the catalog matrix can be generated
     optional arguments:
       -h, --help  show this help message and exit
 
-If the MAF file does not contain the column `Ref_Tri`, use [maf2cat3()](https://github.com/mskcc/DeepSig/blob/master/man/maf2cat3.Rd). It requires a reference genome package, either [BSgenome.Hsapiens.UCSC.hg19](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg19) 
+If the MAF file does not contain the column `Ref_Tri`, use [maf2cat3()](https://github.com/mskcc/tempoSig/blob/master/man/maf2cat3.Rd). It requires a reference genome package, either [BSgenome.Hsapiens.UCSC.hg19](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg19) 
 or [BSgenome.Hsapiens.UCSC.hg38](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg38) installed:
 
     > library(BSgenome.Hsapiens.UCSC.hg19)
-    > maf <- system.file('extdata', 'brca.maf', package = 'DeepSig')
+    > maf <- system.file('extdata', 'brca.maf', package = 'tempoSig')
     > x <- maf2cat3(maf = maf, ref.genome = BSgenome.Hsapiens.UCSC.hg19)
     > write.table(x, file = 'brca_catalog.txt', row.names = TRUE, col.names = TRUE, sep = '\t', quote = F)
     
