@@ -27,7 +27,8 @@ nmf <- function(catalog, sig = NULL, expos = NULL,
                 denovo = TRUE, K = NULL, nrun = 10, verbose = 1, 
                 progress.bar = FALSE, Itmax = 100000, Tol = 1e-5, a = 10, nprint = 100,
                 useC = FALSE, alpha = 1, initializer = 'random', fix.h = NA,
-                clustering = FALSE, logLik.cut = 0.05){
+                clustering = FALSE,
+                logLik.cut = 0.05){
   
   mat <- catalog
   if(!is.matrix(mat)) mat <- as.matrix(catalog)
@@ -135,12 +136,12 @@ nmf <- function(catalog, sig = NULL, expos = NULL,
     for(irun in seq(nrun)){
       df <- abs(1-llik[irun]/max(llik))
       if(df < logLik.cut){   # filter out solutions too far away from global maximum
-        Ws2[[i]] <- Ws[irun]
-        Hs2[[i]] <- Hs[irun]
+        Ws2[i] <- Ws[irun]
+        Hs2[i] <- Hs[irun]
         i <- i + 1
       }
     }
-    ctrd <- centroid(K = K, Ws = Ws, Hs = Hs, progress.bar = progress.bar)
+    ctrd <- centroid(K = K, Ws = Ws2, Hs = Hs2, progress.bar = progress.bar)
     wmax <- ctrd$w
     hmax <- ctrd$h
   }
@@ -249,6 +250,7 @@ centroid <- function(K, Ws, Hs, itmax = 1000, Tol = 1e-5, progress.bar = FALSE){
     df2 <- rep(0, K)
     for(k in seq(K)){
       sil <- cluster::silhouette(x = Idx[,k], dmatrix = dissim[[k]])
+      if(!is(sil,'silhouette')) if(is.na(sil)) next()
       df2[k] <- mean(sil[,'sil_width'])
     }
     if(abs(max(df2-df)) < Tol) break()

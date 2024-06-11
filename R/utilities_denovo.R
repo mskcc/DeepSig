@@ -150,21 +150,24 @@ sigLSAP <- function(x){
 #' @export
 denovoProfiles <- function(object, ref.sig = 'cosmic'){
   
-  if(ref.sig=='cosmic'){
-    ref.sig <- read.table(
-      system.file('extdata','cosmic_sigProfiler_SBS_signatures_v3.1.txt', 
+  if(is.character(ref.sig)){
+    if(ref.sig=='cosmic'){
+      ref.sig <- read.table(
+        system.file('extdata','cosmic_sigProfiler_SBS_signatures_v3.1.txt', 
                   package = 'DeepSig'), header = TRUE, sep = '\t')
-  }else if(is.character(ref.sig)){
-    if(!file.exists(ref.sig)) stop(paste0(ref.sig,' does not exist'))
-    ref.sig <- read.table(ref.sig, header = TRUE, sep = '\t')
+    }else if(!file.exists(ref.sig)) stop(paste0(ref.sig,' does not exist'))
+    else{
+      ref.sig <- read.table(ref.sig, header = TRUE, sep = '\t')
+    }
   }
   
-  sig <- signat(object)
+  if(is(object, 'DeepSig')) sig <- signat(object)
+  else sig <- object
   cosim <- denovoCosim(sig, ref.sig)
   
   K <- NCOL(sig)
   old.par <- par(mfrow=c(K,3), mar=c(1.5,3,2,1),lwd = 0.1, cex.axis = 0.6, 
-      cex.lab = 0.6, tck=-0.05, mgp = c(2,0.5,0), cex.main = 1)
+      cex.lab = 0.6, tck=-0.05, mgp = c(2,0.5,0), cex.main = 0.8)
   S <- colnames(sig)
   
   for(k in seq(K)){

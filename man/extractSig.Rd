@@ -7,9 +7,10 @@
 extractSig(
   object,
   method = "mle",
+  screen = NA,
   itmax = 1000,
   tol = 1e-04,
-  min.tmb = 2,
+  min.tmb = 1,
   compute.pval = FALSE,
   nperm = 1000,
   progress.bar = FALSE,
@@ -24,11 +25,8 @@ extractSig(
   initializer = "random",
   nboot = 0,
   verbose = 2,
-  pg.pval = FALSE,
-  deviance = FALSE,
   fix.h = NA,
   s2a = NA,
-  pg.measure = "cosim",
   sig.collapse = NA,
   ...
 )
@@ -38,6 +36,9 @@ extractSig(
 
 \item{method}{Refitting method; \code{mle} for maximum likelihood (default) or
 \code{mutCone} for mutationalCone.}
+
+\item{screen}{Logical matrix of dimension \code{nsample \times nsignature} whose
+rows indicate signatures to be included in refitting for samples}
 
 \item{itmax}{Maximum number of iterations for maximum likelihood estimate}
 
@@ -56,10 +57,6 @@ extractSig(
 \code{c('permutation','lrt','x.permutation')} for permutation resampling of 
 signatures, likelihood ratio test (asymptotic formula), or
 permutation of count data.}
-
-\item{deviance}{Compute deviance for each signature}
-
-\item{...}{Other parameters for \code{denovo} with \code{method = 'hnmf'}}
 }
 \description{
 Use known signature list to find the most likely exposures in samples

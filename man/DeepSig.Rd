@@ -2,6 +2,7 @@
 % Please edit documentation in R/Allclasses.R, R/DeepSig.R
 \docType{package}
 \name{DeepSig}
+\alias{DeepSig-package}
 \alias{DeepSig}
 \title{Create \code{DeepSig} object}
 \usage{
@@ -19,6 +20,9 @@ signifying \code{COSMIC v2}, \code{sigAnalyzer}, or
 }
 \value{
 Object of class \code{DeepSig}.
+}
+\description{
+Infers mutation signature exposures from mutation catalog data using cancer-specific and pan-cancer reference signature lists via deep learning-trained models. Also includes de novo extraction routines. Suitable for analysis of catalogs derived from limited mutation count data such as whole exome sequencing or MSK-IMPACT.
 }
 \examples{
 set.seed(130)

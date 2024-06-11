@@ -2,7 +2,7 @@
 % Please edit documentation in R/DL.R
 \name{DL.call}
 \alias{DL.call}
-\title{Use DL-trained Model to predict HRD}
+\title{Use DL-trained Model to Make Signature Calls}
 \usage{
 DL.call(
   catalog,
@@ -12,12 +12,9 @@ DL.call(
   threshold = NA,
   mode = "catalog",
   verbose = 1,
-  mbins = NA,
   progress.bar = TRUE,
   min.M = 1,
-  min.attr = 1,
-  min.attr.pole = 10,
-  alpha = NA
+  min.attr = 1
 )
 }
 \arguments{
@@ -26,11 +23,14 @@ in columns}
 
 \item{cancer.type}{Cancer type}
 
-\item{model.path}{Directory path for trained models}
+\item{model.path}{Directory path for trained models, If {\code NA}, defaults
+model corresponding to {\code cancer.type}}
 
-\item{ref.sig}{File path for reference signatures}
+\item{ref.sig}{File path for reference signatures. If {\code NA}, defaults
+to {\code cancer.type}}
 
-\item{threshold}{File path for thresholds}
+\item{threshold}{File path for thresholds. If {\code NA}, defaults to 
+\code{cancer.type}}
 
 \item{verbose}{Verbosity level}
 
@@ -39,13 +39,9 @@ in columns}
 \item{min.M}{Minimum no. of mutations}
 
 \item{min.attr}{Mininum attribution}
-
-\item{min.attr.pole}{Minimum attribution for POLE signatures}
-
-\item{alpha}{False positive rate}
 }
 \description{
-Use DL-trained Model to predict HRD
+Use DL-trained Model to Make Signature Calls
 }
 \examples{
 data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
