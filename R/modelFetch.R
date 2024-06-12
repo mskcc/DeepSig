@@ -44,6 +44,7 @@ modelFetch <- function(url = 'https://api.github.com',
       next()
     }
     dir <- paste0(model.path,'/',zi$name)
+    if(dir.exists(dir)) system(paste0('rm -rf ',dir))
     dir.create(dir,showWarnings=FALSE)
     req2 <- httr2::request(url) |>
       httr2::req_url_path(paste0(path, version, '/', cancer.type,'/',zi$name))
@@ -57,6 +58,7 @@ modelFetch <- function(url = 'https://api.github.com',
         next()
       }
       dir2 <- paste0(dir, '/', zj$name)
+      if(dir.exists(dir2)) system(paste0('rm -rf ',dir2))
       dir.create(dir2, showWarnings=FALSE)
       req3 <- httr2::request(url) |>
         httr2::req_url_path(paste0(path, version, '/', cancer.type, '/', zi$name, '/',zj$name))
