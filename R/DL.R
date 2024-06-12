@@ -112,10 +112,9 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   
   for(s in S){
     if(verbose > 0) cat(paste0(s,'...\n'))
-    engine <- thr[thr$S==s,'engine'][1]
-    fl <- paste0(mfile,'/',engine, '/',s)
+    fl <- paste0(mfile,'/',s)
     if(!dir.exists(fl))
-    fl <- paste0(mfile, '/',engine,'/',s, '/', s)
+    fl <- paste0(mfile, '/',s, '/', s)
     if(!dir.exists(fl)) stop(paste0('Trained model for ',s,' cannot be found'))
     model <- tf$keras.models$load_model(fl)
     mp <- model$predict(xa, verbose = 0)
@@ -158,6 +157,6 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   }
   
   x <- list(exposure.fltrd = E1, ternary.call = B, exposure.raw = E0, 
-            ref.sig = refsig, score = pr, threshold=threshold)
+            ref.sig = refsig, score = pr, threshold=thr)
   return(x)
 }
