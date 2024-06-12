@@ -12,6 +12,7 @@
 #' @param min.attr Mininum attribution
 ##' @param verbose Verbosity level
 #' @param progress.bar Progress bar
+#' @param ... Other parameters to {\code modelFetch}
 #' @examples 
 #' data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
 #' z <- DL.call(catalog = t(data), cancer.type = 'nsclc', alpha = 0.05)
@@ -21,7 +22,7 @@
 
 DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.sig = NA, 
                     threshold = NA, mode = 'catalog', verbose = 1,  progress.bar = TRUE, 
-                    min.M = 1,  min.attr = 1){
+                    min.M = 1,  min.attr = 1, ...){
   
   tf <- reticulate::import('tensorflow')
   pd <- reticulate::import('pandas')
@@ -46,9 +47,10 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
     stop(paste0('Unknown cancer type ', cancer.type, 'requires model input'))
   }
   
-  if(is.na(model.path))
-    mfile <- system.file(paste0('extdata/dlsig/current/', cancer.type,'/models/'), package = 'DeepSig')
-  else mfile <- model.path
+  if(is.na(model.path)){
+#   mfile <- system.file(paste0('extdata/dlsig/current/', cancer.type,'/models/'), package = 'DeepSig')
+    mfile <- modelFetch(cancer.type = cancer.type, verbose = verbose, ...)
+  } else mfile <- model.path
   if(!dir.exists(mfile)) stop(paste0('Model ', mfile, ' could not be found'))
   
   x0 <- catalog
@@ -68,7 +70,8 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
     refsig <- ref.sig
   } else{
     if(is.na(ref.sig))
-      frefsig <- system.file(paste0('extdata/dlsig/current/', cancer.type, '/refsig.txt'), package = 'DeepSig')
+#     frefsig <- system.file(paste0('extdata/dlsig/current/', cancer.type, '/refsig.txt'), package = 'DeepSig')
+      frefsig <- paste(mfile,'refsig.txt',sep='/')
     else
       frefsig <- ref.sig
     if(!file.exists(frefsig)) stop(paste0(frefsig, ' does not exist'))
@@ -77,7 +80,8 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   
   if(!is(threshold,'data.frame') & !is(threshold,'matrix')){
     if(is.na(threshold)){
-      fthr <- system.file(paste0('extdata/dlsig/current/', cancer.type, '/mthreshold_a',alpha,'.txt'), package = 'DeepSig')
+#     fthr <- system.file(paste0('extdata/dlsig/current/', cancer.type, '/mthreshold_a',alpha,'.txt'), package = 'DeepSig')
+      fthr <- paste(mfile, 'threshold_cut.txt', sep='/')
     } else if(is.character(threshold)){
       fthr <- threshold
       if(!file.exists(fthr)) stop(paste0(fthr, ' does not exist'))
@@ -109,7 +113,9 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   for(s in S){
     if(verbose > 0) cat(paste0(s,'...\n'))
     engine <- thr[thr$S==s,'engine'][1]
-    fl <- paste0(mfile,'/',engine, '/',s, '/', s)
+    fl <- paste0(mfile,'/',engine, '/',s)
+    if(!dir.exists(fl))
+    fl <- paste0(mfile, '/',engine,'/',s, '/', s)
     if(!dir.exists(fl)) stop(paste0('Trained model for ',s,' cannot be found'))
     model <- tf$keras.models$load_model(fl)
     mp <- model$predict(xa, verbose = 0)
