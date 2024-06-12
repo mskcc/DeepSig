@@ -23,12 +23,12 @@ modelFetch(
 
 \item{cancer.type}{Cancer type}
 
-\item{token}{Authentication token; if {\code NA}, access attempted without one}
+\item{token}{Authentication token; if `NA`, access attempted without one}
 
 \item{verbose}{Verbosity level}
 
-\item{model.path}{Directory path where the models will be downloaded; if {\code NA},
-{\code tempdir()} will be used}
+\item{model.path}{Directory path where the models will be downloaded; if `NA`,
+`tempdir()` will be used}
 
 \item{min.M}{Minimum no. of mutations}
 

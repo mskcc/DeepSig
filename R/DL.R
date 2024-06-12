@@ -2,12 +2,11 @@
 #' @param catalog Matrix of mutational catalog with samples in rows and 96 trinucleotides 
 #'                in columns
 #' @param cancer.type Cancer type
-#' @param model.path Directory path for trained models, If {\code NA}, defaults
-#'          model corresponding to {\code cancer.type}
-#' @param ref.sig File path for reference signatures. If {\code NA}, defaults
-#'          to {\code cancer.type}
-#' @param threshold File path for thresholds. If {\code NA}, defaults to 
-#'          \code{cancer.type}
+#' @param model.path Directory path for trained models, If `NA`, defaults to
+#'          model corresponding to `cancer.type` and will query github API to download
+#' @param ref.sig File path for reference signatures. If `NA`, defaults
+#'          to `cancer.type`
+#' @param threshold File path for thresholds. If `NA`, defaults to `cancer.type`
 #' @param min.M Minimum no. of mutations
 #' @param min.attr Mininum attribution
 ##' @param verbose Verbosity level

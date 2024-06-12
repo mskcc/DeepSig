@@ -14,7 +14,8 @@ DL.call(
   verbose = 1,
   progress.bar = TRUE,
   min.M = 1,
-  min.attr = 1
+  min.attr = 1,
+  ...
 )
 }
 \arguments{
@@ -23,14 +24,13 @@ in columns}
 
 \item{cancer.type}{Cancer type}
 
-\item{model.path}{Directory path for trained models, If {\code NA}, defaults
-model corresponding to {\code cancer.type}}
+\item{model.path}{Directory path for trained models, If `NA`, defaults to
+model corresponding to `cancer.type` and will query github API to download}
 
-\item{ref.sig}{File path for reference signatures. If {\code NA}, defaults
-to {\code cancer.type}}
+\item{ref.sig}{File path for reference signatures. If `NA`, defaults
+to `cancer.type`}
 
-\item{threshold}{File path for thresholds. If {\code NA}, defaults to 
-\code{cancer.type}}
+\item{threshold}{File path for thresholds. If `NA`, defaults to `cancer.type`}
 
 \item{verbose}{Verbosity level}
 
@@ -39,6 +39,8 @@ to {\code cancer.type}}
 \item{min.M}{Minimum no. of mutations}
 
 \item{min.attr}{Mininum attribution}
+
+\item{...}{Other parameters to {\code modelFetch}}
 }
 \description{
 Use DL-trained Model to Make Signature Calls

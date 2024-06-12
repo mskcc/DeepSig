@@ -8,13 +8,13 @@
 #' @param path Repository path of the model 
 #' @param version Version number
 #' @param cancer.type Cancer type
-#' @param token Authentication token; if {\code NA}, access attempted without one
+#' @param token Authentication token; if `NA`, access attempted without one
 #' @param verbose Print signature names being downloaded
 #' @param min.M Minimum no. of mutations
 #' @param min.attr Mininum attribution
 #' @param verbose Verbosity level
-#' @param model.path Directory path where the models will be downloaded; if {\code NA},
-#'  {\code tempdir()} will be used
+#' @param model.path Directory path where the models will be downloaded; if `NA`,
+#'  `tempdir()` will be used
 #' @examples
 #' dir <- modelFetch()
 #' print(dir)
