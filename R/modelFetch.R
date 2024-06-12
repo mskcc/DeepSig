@@ -36,9 +36,9 @@ modelFetch <- function(url = 'https://api.github.com',
   z <- httr2::resp_body_json(resp)
   if(verbose) cat('Querying github API for ',cancer.type,' models...\n',sep='')
   pb <- txtProgressBar(style=3)
-  for(i in seq_along(z)){
+  for(i in rev(seq_along(z))){
     zi <- z[[i]]
-    setTxtProgressBar(pb, i/length(z))
+    setTxtProgressBar(pb, 1-(i/length(z)))
     if(zi$type=='file'){
       download.file(zi$download_url, paste0(model.path,'/',zi$name), quiet=TRUE)
       next()
