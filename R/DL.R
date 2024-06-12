@@ -11,7 +11,7 @@
 #' @param min.attr Mininum attribution
 ##' @param verbose Verbosity level
 #' @param progress.bar Progress bar
-#' @param ... Other parameters to {\code modelFetch}
+#' @param ... Other parameters to `modelFetch`
 #' @examples 
 #' data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
 #' z <- DL.call(catalog = t(data), cancer.type = 'nsclc', alpha = 0.05)

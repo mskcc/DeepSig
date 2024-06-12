@@ -5,7 +5,7 @@
 #' @param object Object of class \code{DeepSig}
 #' @param method Refitting method; \code{mle} for maximum likelihood (default) or
 #'               \code{mutCone} for mutationalCone.
-#' @param screen Logical matrix of dimension \code{nsample \times nsignature} whose
+#' @param screen Logical matrix of dimension \code{nsample x nsignature} whose
 #'        rows indicate signatures to be included in refitting for samples
 #' @param itmax Maximum number of iterations for maximum likelihood estimate
 #' @param tol Tolerance for convergence

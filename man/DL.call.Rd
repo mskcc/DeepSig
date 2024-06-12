@@ -40,7 +40,7 @@ to `cancer.type`}
 
 \item{min.attr}{Mininum attribution}
 
-\item{...}{Other parameters to {\code modelFetch}}
+\item{...}{Other parameters to `modelFetch`}
 }
 \description{
 Use DL-trained Model to Make Signature Calls
