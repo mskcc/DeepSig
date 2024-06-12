@@ -36,7 +36,7 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   cancer.type <- tolower(cancer.type) # no upper casing necessary
   known.types <- c('breast', 'ovary', 'prostate', 'pancreas', 'bladder','colorect',
                    'gct','skin','cns','head_neck','kidney','uterus', 'nsclc','liver',
-                   'sclc', 'pan_cancer')
+                   'sclc', 'pancancer')
   
   if(!cancer.type %in% known.types){  # Convert Oncotree code into cancer.type
     cancer.type <- oncotree(onco = cancer.type)
