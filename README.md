@@ -51,8 +51,7 @@ Pan-cancer model               | pancancer    |                       |         
 
 Input argument **cancer.type** will be checked against the second column above. If it does not match one, it will be 
 thought of as an [oncoTree](https://oncotree.mskcc.org/) code, and an attempt will be made to match it to **cancer.type**
-using [oncoTree()](https://github.com/mskcc/deepsig/blob/main/R/oncoTree.R)
-
+using [oncoTree()](https://github.com/mskcc/DeepSig/blob/main/R/oncotree.R)
 As an example, the following script will generate outputs for the TCGA-OV samples using **ovarian** pre-trained model:
 
     > library(DeepSig)
