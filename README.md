@@ -55,7 +55,7 @@ thought of as an [oncoTree](https://oncotree.mskcc.org/) code, and an attempt wi
 using [oncoTree()](https://github.com/mskcc/DeepSig/blob/main/R/oncotree.R). This matching of oncotree code to **cancer.type**
 is mostly based on the top-level **tissue** name of oncotree hierarchy, except for germ cell tumor and **sclc**.
 The table of reference signatures in a model can be looked up from pre-trained model directories (e.g., for breast cancer,
-see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/blob/main/inst/extdata/dlsig/v0.95/breast])).
+see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)).
 
 In general, the choice of which model to apply for a cohort should be based on the knowledge of how similar the cohort
 is to one of the tissue of origin-based cancer types above. For rare cancer types, cancer of unknown primary, and samples
