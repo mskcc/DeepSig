@@ -23,6 +23,7 @@ Tumor_Sample_Barcode_3 |     5   |     0    |    0    |    1    |    1
 
 Column names are the the set of categories to which mutation data from sequencing experiments have been classified (**Sample_ID** column name is absent in the actual file). These trinucleotide contexts are the pyrimidine bases before and after mutation flanked by upstream and downstream nucleotides (96 in total). Each row corresponding to **Tumor_Sample_Barcode** contains non-negative counts of single nucleotide variants (SNVs). This trinucleotide matrix can be generated using the utility function [maf2cat3]. MAF files can be generated from VCF files using [vcf2maf](https://github.com/mskcc/vcf2maf). Note: the output from [maf2cat3] needs to be transposed so that rows contain samples.
 
+
 The function
 
     DL.call(catalog, cancer.type, model.path, ref.sig, threshold, mbins)
@@ -51,7 +52,17 @@ Pan-cancer model               | pancancer    |                       |         
 
 Input argument **cancer.type** will be checked against the second column above. If it does not match one, it will be 
 thought of as an [oncoTree](https://oncotree.mskcc.org/) code, and an attempt will be made to match it to **cancer.type**
-using [oncoTree()](https://github.com/mskcc/DeepSig/blob/main/R/oncotree.R)
+using [oncoTree()](https://github.com/mskcc/DeepSig/blob/main/R/oncotree.R). This matching of oncotree code to **cancer.type**
+is mostly based on the top-level **tissue** name of oncotree hierarchy, except for germ cell tumor and **sclc**.
+The table of reference signatures in a model can be looked up from pre-trained model directories (e.g., for breast cancer,
+see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/blob/main/inst/extdata/dlsig/v0.95/breast])).
+
+In general, the choice of which model to apply for a cohort should be based on the knowledge of how similar the cohort
+is to one of the tissue of origin-based cancer types above. For rare cancer types, cancer of unknown primary, and samples
+for which signatures not in the reference might be expected (e.g., lung cancer samples with history of treatment with temozolomide or
+hypermutation with POLE oncogenic mutations), **pancancer** model can be used. The drawback of **pancacer** model is
+that detection precision and recall are generally lower than cancer type-specific models.
+
 As an example, the following script will generate outputs for the TCGA-OV samples using **ovarian** pre-trained model:
 
     > library(DeepSig)
