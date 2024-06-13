@@ -1,26 +1,27 @@
 # DeepSig
-Machine Learning-based Mutational Signature Exposure Inference for WES and MSK-IMPACT data
+Deep Learning-based Mutational Signature Caller for MSK-IMPACT Data
 
 ## Overview
 **DeepSig** contains single-base substitution (SBS) mutational signature inference tools intended for 
-data sets derived from non-WGS (e.g., WES or MSK-IMPACT) platforms.
-It combines a maximum likelihood-based algorithm, fitting mutational catalogs to proportions of a pre-defined 
-reference signature set, with deep learning (DL)-based models making binary calls of the presence/absence of
-reference signatures. The latter enables a quality control filtering of signature proportions parametrized
-by the total mutation count of each sample.
+data sets derived from targeted sequencing (MSK-IMPACT) platforms. 
+Models for major cancer types, pre-trained using synthetic data derived from whole-genome seqeuencing (WGS)
+mutational catalogs and matched to corresponding MSK-IMPACT data, are used to predict presence of all
+reference signatures in a new clinical sample based on estimated precision.
 
-## Single-sample workflow
-For single samples or a small cohort derived from WES or MSK-IMPACT, the main workflow comprises refitting
-and DL-filtering. Input data are of the form of catalog matrix:
+For a single sample or a small cohort derived from MSK-IMPACT, the main workflow comprises extracting signature
+scores using a cancer type-specific model, making discrete ternary calls, and estimating exposures (
+number of mutations attributed to each signature).
+
+## Input data
+Input data are of the form of catalog matrix:
 
 Sample_ID              | A[C>A]A | A[C>A]C  | A[C>A]G | A[C>A]T | C[C>A]A  
 ---------------------- | ------- | -------- | ------- | ------- | --------
-Tumor Sample Barcode 1 |     0   |     3    |    5    |    0    |    0  
-Tumor Sample Barcode 2 |     2   |     1    |    1    |    2    |    0 
-Tumor Sample Barcode 3 |     5   |     0    |    0    |    1    |    1 
+Tumor_Sample_Barcode_1 |     0   |     3    |    5    |    0    |    0  
+Tumor_Sample_Barcode_2 |     2   |     1    |    1    |    2    |    0 
+Tumor_Sample_Barcode_3 |     5   |     0    |    0    |    1    |    1 
 
-
-Row names are the the set of categories to which mutation data from sequencing experiments have been classified (**Sample_ID** column name is absent in the actual file). These trinucleotide contexts are the pyrimidine bases before and after mutation flanked by upstream and downstream nucleotides (96 in total). Each row corresponding to **Tumor_Sample_Barcode** contains non-negative counts of single nucleotide variants (SNVs). This trinucleotide matrix can be generated using the utility function [maf2cat2] or [maf2cat3]. MAF files can be generated from VCF files using [vcf2maf](https://github.com/mskcc/vcf2maf). Note: the output from [maf2cat3] needs to be transposed so that rows contain samples.
+Column names are the the set of categories to which mutation data from sequencing experiments have been classified (**Sample_ID** column name is absent in the actual file). These trinucleotide contexts are the pyrimidine bases before and after mutation flanked by upstream and downstream nucleotides (96 in total). Each row corresponding to **Tumor_Sample_Barcode** contains non-negative counts of single nucleotide variants (SNVs). This trinucleotide matrix can be generated using the utility function [maf2cat3]. MAF files can be generated from VCF files using [vcf2maf](https://github.com/mskcc/vcf2maf). Note: the output from [maf2cat3] needs to be transposed so that rows contain samples.
 
 The function
 
@@ -30,23 +31,27 @@ will find the pre-trained model corresponding to **cancer.type** and perform sig
 Except for **catalog** and **cancer.type**, other arguments will default to those for pre-trained models if 
 **cancer.type** is among those built-in:
 
-cancer.type    | ICGC/PCAWG | TCGA
--------------- | ---------- | ------
-breast         | Breast     | BRCA
-ovarian        | Ovary      | OV
-prostate       | Prostate   | PRAD
-pancreas       | Pancraeas  | PAAD
-bladder        | Bladder    | BLCA
-colorectal     | Colorectal | COAD
-melanoma       | Skin       | SKCM
-cns            | CNS        | GBM
-nsclc          | Lung       | LUAD/LUSC
-sclc           |            |
-head_neck      | Head_neck  | HNSC
-renal_cell     | Kidney     | KICH/KIRC/KIRP
-endometrial    | Uterus     | UCEC
-germ_cell      |            | TGCT
-pan_cancer     |            |
+Cancer type                    | cancer.type  | OncoTree              | ICGC/PCAWG | TCGA
+-------------------------------| ------------ | --------------------- | ---------- | ------
+Breat cancer                   | breast       | Breast                | Breast     | BRCA
+Ovarian cancer                 | ovary        | Ovary/Fallopian Tube  | Ovary      | OV
+Prostate cancer                | prostate     | Prostate              | Prostate   | PRAD
+Pancreatic cancer              | pancreas     | Pancreas              | Pancreas  | PAAD
+Bladder cancer                 | bladder      | Bladder/Urinary Tract | Bladder    | BLCA
+Colorectal cancer              | colorect     | Bowel                 | Colorectal | COAD
+Melanoma                       | skin         | Skin                  | Skin       | SKCM
+Glioma                         | cns          | CNS/Brain             | CNS        | GBM
+Non-small cell lung cancer     | nsclc        | Lung                  | Lung       | LUAD/LUSC
+Small cell lung cancer sclc    | sclc         | CSCLC                 |            |
+Head and neck cancer head_neck | head_neck    | Head and Neck         | Head       | HNSC
+Renal cell carcinoma kidney    | kidney       | Kidney                | Kidney     | KICH/KIRC/KIRP
+Endometrial cancer uterus      | uterus       | Uterus                | Uterus     | UCEC
+Germ cell tumor                | gct          |                       | TGCT       |
+Pan-cancer model               | pancancer    |                       |            |
+
+Input argument **cancer.type** will be checked against the second column above. If it does not match one, it will be 
+thought of as an [oncoTree](https://oncotree.mskcc.org/) code, and an attempt will be made to match it to **cancer.type**
+using [oncoTree()](https://github.com/mskcc/deepsig/blob/main/R/oncoTree.R)
 
 As an example, the following script will generate outputs for the TCGA-OV samples using **ovarian** pre-trained model:
 
