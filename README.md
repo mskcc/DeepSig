@@ -215,9 +215,6 @@ DL-based filtering requires [tensorflow](https://tensorflow.org/install) and [pa
 
 See the tensorflow install page for further information.
 
-Dependencies include [Rcpp](https://cran.r-project.org/package=Rcpp), [gtools](https://cran.r-project.org/package=gtools), [argparse](https://cran.r-project.org/package=argparse), [coneproj](https://cran.r-project.org/package=coneproj),
-and [reticulate](https://cran.r-project.org/package=reticulate).
-
 We currently recommend downloading a source tar.gz file and
 installing **DeepSig** via
 
