@@ -26,7 +26,7 @@ Column names are the the set of categories to which mutation data from sequencin
 ## Main caller
 The function
 
-    DL.call(catalog, cancer.type, model.path, ref.sig, threshold, mbins)
+    DL.call(catalog, cancer.type = 'pancancer', model.path = NA, ref.sig = NA, threshold = NA)
 
 will find the pre-trained model corresponding to **cancer.type** and perform signature fitting and filtering.
 Except for **catalog** and **cancer.type**, other arguments will default to those for pre-trained models if 
@@ -50,6 +50,7 @@ Endometrial cancer uterus      | uterus       | Uterus                | Uterus  
 Germ cell tumor                | gct          |                       | TGCT       |
 Pan-cancer model               | pancancer    |                       |            |
 
+
 Input argument **cancer.type** will be checked against the second column above. If it does not match one, it will be 
 thought of as an [oncoTree](https://oncotree.mskcc.org/) code, and an attempt will be made to match it to **cancer.type**
 using [oncoTree()](https://github.com/mskcc/DeepSig/blob/main/R/oncotree.R). This matching of oncotree code to **cancer.type**
@@ -57,11 +58,20 @@ is mostly based on the top-level **tissue** name of oncotree hierarchy, except f
 The table of reference signatures in a model can be looked up from pre-trained model directories (e.g., for breast cancer,
 see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)).
 
+The **model.path** argument is the path where trained models can be found (directory containing SBS* subdirectories similar
+to those in [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)), 
+**ref.sig** is the path of the reference signature file (e.g., [refsig.txt](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast/refsig.txt)),
+and **threshold** is
+the threshold file 
+(e.g., [threshold_cut.txt](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast/threshold_cut.txt)).
+
 In general, the choice of which model to apply for a cohort should be based on the knowledge of how similar the cohort
 is to one of the tissue of origin-based cancer types above. For rare cancer types, cancer of unknown primary, and samples
 for which signatures not in the reference might be expected (e.g., lung cancer samples with history of treatment with temozolomide or
 hypermutation with POLE oncogenic mutations), **pancancer** model can be used. The drawback of **pancacer** model is
 that detection precision and recall are generally lower than cancer type-specific models.
+To reduce the size of package, default models are not included and are downloaded on demand via queries to [GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
+[modelFetch()](https://github.com/mskcc/DeepSig/blob/main/R/modelFetch.R).
 
 As an example, the following script will generate outputs for the TCGA-OV samples using **ovarian** pre-trained model:
 
