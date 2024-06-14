@@ -9,8 +9,8 @@ mutational catalogs and matched to corresponding MSK-IMPACT data, are used to pr
 reference signatures in a new clinical sample based on estimated precision.
 
 For a single sample or a small cohort derived from MSK-IMPACT, the main workflow comprises extracting signature
-scores using a cancer type-specific model, making discrete ternary calls, and estimating exposures (
-number of mutations attributed to each signature).
+scores using a cancer type-specific model, making discrete ternary calls, and estimating exposures 
+(number of mutations attributed to each signature).
 
 ## Input data
 Input data are of the form of catalog matrix:
@@ -21,7 +21,13 @@ Tumor_Sample_Barcode_1 |     0   |     3    |    5    |    0    |    0
 Tumor_Sample_Barcode_2 |     2   |     1    |    1    |    2    |    0 
 Tumor_Sample_Barcode_3 |     5   |     0    |    0    |    1    |    1 
 
-Column names are the the set of categories to which mutation data from sequencing experiments have been classified (**Sample_ID** column name is absent in the actual file). These trinucleotide contexts are the pyrimidine bases before and after mutation flanked by upstream and downstream nucleotides (96 in total). Each row corresponding to **Tumor_Sample_Barcode** contains non-negative counts of single nucleotide variants (SNVs). This trinucleotide matrix can be generated using the utility function [maf2cat3]. MAF files can be generated from VCF files using [vcf2maf](https://github.com/mskcc/vcf2maf). Note: the output from [maf2cat3](https://github.com/mskcc/DeepSig/blob/main/R/utilities3.R) needs to be transposed so that rows contain samples.
+Column names are the the set of categories to which mutation data from sequencing experiments have been classified 
+(**Sample_ID** column name is absent in the actual file). These trinucleotide contexts are the pyrimidine bases 
+before and after mutation flanked by upstream and downstream nucleotides (96 in total). Each row corresponding 
+to **Tumor_Sample_Barcode** contains non-negative counts of single nucleotide variants (SNVs). 
+This trinucleotide matrix can be generated using the utility function [maf2cat3(https://github.com/mskcc/DeepSig/blob/main/R/utilities3.R)]. 
+MAF files can be generated from VCF files using [vcf2maf](https://github.com/mskcc/vcf2maf). 
+Note: the output from [maf2cat3] needs to be transposed so that rows contain samples.
 
 ## Main caller
 The function
@@ -60,30 +66,39 @@ see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main
 
 The **model.path** argument is the path where trained models can be found (directory containing SBS* subdirectories similar
 to those in [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)), 
-**ref.sig** is the path of the reference signature file (e.g., [refsig.txt](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast/refsig.txt)),
-and **threshold** is
-the threshold file 
+**ref.sig** is the path of the reference signature file 
+(e.g., [refsig.txt](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast/refsig.txt)),
+and **threshold** is the threshold file 
 (e.g., [threshold_cut.txt](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast/threshold_cut.txt)).
 
 In general, the choice of which model to apply for a cohort should be based on the knowledge of how similar the cohort
 is to one of the tissue of origin-based cancer types above. For rare cancer types, cancer of unknown primary, and samples
-for which signatures not in the reference might be expected (e.g., lung cancer samples with history of treatment with temozolomide or
-hypermutation with POLE oncogenic mutations), **pancancer** model can be used. The drawback of **pancacer** model is
+for which signatures not in the reference might be expected (e.g., lung cancer samples with history of treatment with 
+temozolomide or hypermutation with POLE oncogenic mutations), **pancancer** model can be used. The drawback of **pancacer** model is
 that detection precision and recall are generally lower than cancer type-specific models.
-To reduce the size of package, default models are not included and are downloaded on demand via queries to [GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
+To reduce the size of package, default models are not included and are downloaded on demand via queries to 
+[GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
 [modelFetch()](https://github.com/mskcc/DeepSig/blob/main/R/modelFetch.R).
 
-As an example, the following script will generate outputs for the TCGA-OV samples using **ovarian** pre-trained model:
+As an example, the following script will generate outputs for the TCGA-OV samples using **ovary** pre-trained model:
 
     > library(DeepSig)
+    > token <- Sys.getenv('token')
     > xcat <- read.table(system.file('extdata', 'tcga_ov_xcat.txt', package = 'DeepSig'), header = TRUE, sep = '\t')
-    > z <- DL.call(catalog = t(xcat), cancer.type = 'ovarian')
+    > z <- DL.call(catalog = t(xcat), cancer.type = 'ovarian', token = token)
     > names(z)
-      [1] "exposure.raw"   "exposure.fltrd" "binary.call" "ref.sig"  
-      [5] "score"
+      [1] "exposure.fltrd" "ternary.call"   "exposure.raw"   "ref.sig"        "score"          "threshold"
+
+The argument **token** is the 
+[personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
+in cases where the version of models are restricted-access. The above-use of **Sys.getev** assumes that the line
+
+    token = '[your_access_token]'
+
+has been placed in the file **~/.Renviron**.
 
 ### Outputs
-The return value is a list of 5 data frames, which include the raw proportions **exposure.raw**
+The return value is a list of 6 data frames as shown in the above example, which include the raw proportions **exposure.raw**
 
 sid            | M    | SBS1    | SBS3     | SBS2.13  | SBS5   | SBS8  | SBS17  | SBS18  | SBS31  | SBS35
 -------------- | -----| ------- | -------- | -------- | ------ | ----- | ------ | ------ | ------ | -------
