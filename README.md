@@ -32,8 +32,7 @@ Note: the output from [maf2cat3] needs to be transposed so that rows contain sam
 ## Main caller
 The function
 
-    DL.call(catalog, cancer.type = 'pancancer', model.path = NA, ref.sig = NA, threshold = NA,
-            min.attr = 1, ...)
+    DL.call(catalog, cancer.type = 'pancancer', model.path = NA, ref.sig = NA, threshold = NA, min.attr = 1, ...)
 
 will find the pre-trained model corresponding to `cancer.type` and perform signature fitting and filtering.
 Except for `catalog` and `cancer.type`, other arguments will default to those for pre-trained models if 
@@ -212,7 +211,7 @@ in `~/.R/MAKEVARS` on a Mac (check the links to make sure the correct version nu
 
 DL-based filtering requires [tensorflow](https://tensorflow.org/install) and [pandas](https://pandas.pydata.org/getting_started.html). In a Mac,
   
-    $ pip install tensorflow pandas
+    $ python3 -m pip install tensorflow pandas
 
 See the tensorflow install page for further information.
 
