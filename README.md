@@ -25,7 +25,7 @@ Column names are the the set of categories to which mutation data from sequencin
 (`Sample_ID` column name is absent in the actual file). These trinucleotide contexts are the pyrimidine bases 
 before and after mutation flanked by upstream and downstream nucleotides (96 in total). Each row corresponding 
 to `Tumor_Sample_Barcode` contains non-negative counts of single nucleotide variants (SNVs). 
-This trinucleotide matrix can be generated using the utility function [maf2cat3(https://github.com/mskcc/DeepSig/blob/main/R/utilities3.R)]. 
+This trinucleotide matrix can be generated using the utility function [maf2cat3](https://github.com/mskcc/DeepSig/blob/main/R/utilities3.R). 
 MAF files can be generated from VCF files using [vcf2maf](https://github.com/mskcc/vcf2maf). 
 Note: the output from [maf2cat3] needs to be transposed so that rows contain samples.
 
