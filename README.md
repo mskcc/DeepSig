@@ -228,21 +228,7 @@ which will also install dependencies.
 
 ### Catalog matrix generation
 
-If a MAF file contains the column `Ref_Tri`, the catalog matrix can be generated using [maf2cat()](https://github.com/mskcc/tempoSig/blob/master/man/maf2cat.Rd) or its command-line wrapper:
-
-    $ ./maf2cat2.R -h
-    usage: ./maf2cat2.R [-h] MAF CATALOG
-
-    Construct mutational catalog from MAF file with Ref_Tri column
-
-    positional arguments:
-      MAF         input MAF file
-      CATALOG     output catalog file
-
-    optional arguments:
-      -h, --help  show this help message and exit
-
-If the MAF file does not contain the column `Ref_Tri`, use [maf2cat3()](https://github.com/mskcc/tempoSig/blob/master/man/maf2cat3.Rd). It requires a reference genome package, either [BSgenome.Hsapiens.UCSC.hg19](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg19) 
+The catalog file as input data can be generated from MAF file using [maf2cat3()](https://github.com/mskcc/tempoSig/blob/master/man/maf2cat3.Rd). It requires a reference genome package, either [BSgenome.Hsapiens.UCSC.hg19](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg19) 
 or [BSgenome.Hsapiens.UCSC.hg38](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg38) installed:
 
     > library(BSgenome.Hsapiens.UCSC.hg19)
