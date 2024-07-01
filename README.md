@@ -32,7 +32,7 @@ Note: the output from [maf2cat3] needs to be transposed so that rows contain sam
 ## Main caller
 The function
 
-    DL.call(catalog, cancer.type = 'pancancer', model.path = NA, min.attr = 1, ...)
+    DL.call(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', min.attr = 1, ...)
 
 will find the pre-trained model corresponding to `cancer.type` and perform signature fitting and filtering.
 Except for `catalog` and `cancer.type`, other arguments will default to those for pre-trained models if 
@@ -64,21 +64,20 @@ is mostly based on the top-level `tissue` name of oncotree hierarchy, except for
 The table of reference signatures in a model can be looked up from pre-trained model directories (e.g., for breast cancer,
 see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)).
 
-The `model.path` argument is the path where trained models can be found (directory containing SBS* subdirectories similar
-to those in [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)), 
-The models for each signature and other associated files (`refsit.txt` and `threshold_cut.txt`) will be looked for at 
-`model.path/[cancer.type]` subdirectory. If this directory does not exist, an attempt will be made to query the Github
-and download these files to the directory. This scheme ensures that a second call for the same `cancer.type` will use
-the previously downloaded data.
-
 In general, the choice of which model to apply for a cohort should be based on the knowledge of how similar the cohort
 is to one of the tissue of origin-based cancer types above. For rare cancer types, cancer of unknown primary, and samples
 for which signatures not in the reference might be expected (e.g., lung cancer samples with history of treatment with 
 temozolomide or hypermutation with POLE oncogenic mutations), `pancancer` model can be used. The drawback of `pancacer` model is
 that detection precision and recall are generally lower than cancer type-specific models.
-To reduce the size of package, default models are not included and are downloaded on demand via queries to 
-[GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
+The `model.path` argument (by default `./.DeepSig`)
+is the path where trained models can be found (directory containing SBS* subdirectories similar
+to those in [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)), 
+The models for each signature and other associated files (`refsit.txt` and `threshold_cut.txt`) will be looked for at 
+`model.path/[cancer.type]` subdirectory. If this subdirectory does not exist, an attempt will be made to query the Github
+and download these files to the directory; to reduce the size of package, default models are not included and are downloaded 
+on demand via queries to [GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
 [modelFetch()](https://github.com/mskcc/DeepSig/blob/main/R/modelFetch.R).
+This scheme also ensures that a second call for the same `cancer.type` will use the previously downloaded data.
 
 As an example, the following script will generate outputs for the TCGA-OV samples using `ovary` pre-trained model:
 
