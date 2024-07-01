@@ -32,7 +32,7 @@ Note: the output from [maf2cat3] needs to be transposed so that rows contain sam
 ## Main caller
 The function
 
-    DL.call(catalog, cancer.type = 'pancancer', model.path = NA, ref.sig = NA, threshold = NA, min.attr = 1, ...)
+    DL.call(catalog, cancer.type = 'pancancer', model.path = NA, min.attr = 1, ...)
 
 will find the pre-trained model corresponding to `cancer.type` and perform signature fitting and filtering.
 Except for `catalog` and `cancer.type`, other arguments will default to those for pre-trained models if 
@@ -66,10 +66,10 @@ see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main
 
 The `model.path` argument is the path where trained models can be found (directory containing SBS* subdirectories similar
 to those in [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)), 
-`ref.sig` is the path of the reference signature file 
-(e.g., [refsig.txt](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast/refsig.txt)),
-and `threshold` is the threshold file 
-(e.g., [threshold_cut.txt](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast/threshold_cut.txt)).
+The models for each signature and other associated files (`refsit.txt` and `threshold_cut.txt`) will be looked for at 
+`model.path/[cancer.type]` subdirectory. If this directory does not exist, an attempt will be made to query the Github
+and download these files to the directory. This scheme ensures that a second call for the same `cancer.type` will use
+the previously downloaded data.
 
 In general, the choice of which model to apply for a cohort should be based on the knowledge of how similar the cohort
 is to one of the tissue of origin-based cancer types above. For rare cancer types, cancer of unknown primary, and samples
