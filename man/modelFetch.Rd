@@ -11,7 +11,7 @@ modelFetch(
   cancer.type = "breast",
   token = NA,
   verbose = TRUE,
-  model.path = NA
+  model.path
 )
 }
 \arguments{
@@ -27,8 +27,9 @@ modelFetch(
 
 \item{verbose}{Verbosity level}
 
-\item{model.path}{Directory path where the models will be downloaded; if `NA`,
-`tempdir()` will be used}
+\item{model.path}{Model path where downloaded data are to be placed 
+dir <- modelFetch()
+print(dir)}
 
 \item{min.M}{Minimum no. of mutations}
 
@@ -37,9 +38,4 @@ modelFetch(
 \description{
 Use REST API of the github and download pre-trained models onto the 
 local machine
-}
-\examples{
-dir <- modelFetch()
-print(dir)
-
 }

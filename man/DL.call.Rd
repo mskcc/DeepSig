@@ -6,10 +6,8 @@
 \usage{
 DL.call(
   catalog,
-  cancer.type = "pan_cancer",
-  model.path = NA,
-  ref.sig = NA,
-  threshold = NA,
+  cancer.type = "pancancer",
+  model.path = "./.DeepSig",
   mode = "catalog",
   verbose = 1,
   progress.bar = TRUE,
@@ -27,11 +25,6 @@ in columns}
 \item{model.path}{Directory path for trained models, If `NA`, defaults to
 model corresponding to `cancer.type` and will query github API to download}
 
-\item{ref.sig}{File path for reference signatures. If `NA`, defaults
-to `cancer.type`}
-
-\item{threshold}{File path for thresholds. If `NA`, defaults to `cancer.type`}
-
 \item{verbose}{Verbosity level}
 
 \item{progress.bar}{Progress bar}
@@ -41,13 +34,18 @@ to `cancer.type`}
 \item{min.attr}{Mininum attribution}
 
 \item{...}{Other parameters to `modelFetch`}
+
+\item{ref.sig}{File path for reference signatures. If `NA`, defaults
+to `cancer.type`}
+
+\item{threshold}{File path for thresholds. If `NA`, defaults to `cancer.type`}
 }
 \description{
 Use DL-trained Model to Make Signature Calls
 }
 \examples{
 data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
-z <- DL.call(catalog = t(data), cancer.type = 'nsclc', alpha = 0.05)
+z <- DL.call(catalog = t(data), cancer.type = 'braest')
 head(z$exposure.fltrd)
 
 }

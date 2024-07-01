@@ -13,9 +13,7 @@
 #' @param min.M Minimum no. of mutations
 #' @param min.attr Mininum attribution
 #' @param verbose Verbosity level
-#' @param model.path Directory path where the models will be downloaded; if `NA`,
-#'  `tempdir()` will be used
-#' @examples
+#' @param model.path Model path where downloaded data are to be placed 
 #' dir <- modelFetch()
 #' print(dir)
 #' 
@@ -23,7 +21,7 @@
 modelFetch <- function(url = 'https://api.github.com', 
                        path = '/repos/mskcc/DeepSig/contents/inst/extdata/dlsig/',
                        version = 'v0.95', cancer.type = 'breast', token = NA, 
-                       verbose = TRUE, model.path = NA){
+                       verbose = TRUE, model.path){
   if(is.na(model.path))
     model.path <- tempdir()
   req <- httr2::request(url) |>

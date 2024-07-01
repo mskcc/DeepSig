@@ -14,13 +14,13 @@
 #' @param ... Other parameters to `modelFetch`
 #' @examples 
 #' data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
-#' z <- DL.call(catalog = t(data), cancer.type = 'nsclc', alpha = 0.05)
+#' z <- DL.call(catalog = t(data), cancer.type = 'braest')
 #' head(z$exposure.fltrd)
 #' 
 #' @export
 
-DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.sig = NA, 
-                    threshold = NA, mode = 'catalog', verbose = 1,  progress.bar = TRUE, 
+DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', 
+                    mode = 'catalog', verbose = 1,  progress.bar = TRUE, 
                     min.M = 1,  min.attr = 1, ...){
   
   tf <- reticulate::import('tensorflow')
@@ -39,18 +39,21 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
                    'sclc', 'pancancer')
   
   if(!cancer.type %in% known.types){  # Convert Oncotree code into cancer.type
-    cancer.type <- oncotree(onco = cancer.type)
+    cancer.type <- oncoTree(onco = cancer.type)
   }
   if(!cancer.type %in% known.types){
     if(is.na(model.path) | is.na(threshold))
     stop(paste0('Unknown cancer type ', cancer.type, 'requires model input'))
   }
   
-  if(is.na(model.path)){
-#   mfile <- system.file(paste0('extdata/dlsig/current/', cancer.type,'/models/'), package = 'DeepSig')
-    mfile <- modelFetch(cancer.type = cancer.type, verbose = verbose, ...)
-  } else mfile <- model.path
-  if(!dir.exists(mfile)) stop(paste0('Model ', mfile, ' could not be found'))
+  mfile <- paste(model.path, cancer.type, sep = '/')
+  if(!dir.exists(mfile)){
+     if(verbose) cat('Model for ', cancer.type, ' cannot be found. Downloading...\n')
+     if(!dir.exists(model.path)) dir.create(model.path)
+     if(!dir.exists(mfile)) dir.create(mfile)
+     modelFetch(cancer.type = cancer.type, verbose = verbose, 
+                         model.path = mfile, ...)
+  }
   
   x0 <- catalog
   sid0 <- rownames(catalog)
@@ -62,33 +65,13 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   nsamp <- length(M)
   catalog <- catalog[sid,,drop=F]
 
-  if(is(ref.sig,'matrix')){
-    ref.sig <- data.frame(ref.sig)
-  }
-  if(is(ref.sig,'data.frame')){
-    refsig <- ref.sig
-  } else{
-    if(is.na(ref.sig))
-#     frefsig <- system.file(paste0('extdata/dlsig/current/', cancer.type, '/refsig.txt'), package = 'DeepSig')
-      frefsig <- paste(mfile,'refsig.txt',sep='/')
-    else
-      frefsig <- ref.sig
-    if(!file.exists(frefsig)) stop(paste0(frefsig, ' does not exist'))
-    refsig <- read.table(frefsig, header = TRUE, sep = '\t')
-  }
-  
-  if(!is(threshold,'data.frame') & !is(threshold,'matrix')){
-    if(is.na(threshold)){
-#     fthr <- system.file(paste0('extdata/dlsig/current/', cancer.type, '/mthreshold_a',alpha,'.txt'), package = 'DeepSig')
-      fthr <- paste(mfile, 'threshold_cut.txt', sep='/')
-    } else if(is.character(threshold)){
-      fthr <- threshold
-      if(!file.exists(fthr)) stop(paste0(fthr, ' does not exist'))
-    } else{ 
-      stop('threshold is of unknown type')
-    }
-    thr <- read.table(fthr, header = TRUE, sep = '\t')
-  }
+  frefsig <- paste(mfile,'refsig.txt',sep='/')
+  if(!file.exists(frefsig)) stop(paste0(frefsig, ' does not exist'))
+  refsig <- read.table(frefsig, header = TRUE, sep = '\t')
+      
+  fthr <- paste(mfile, 'threshold_cut.txt', sep='/')
+  if(!file.exists(fthr)) stop(paste0(fthr, ' does not exist'))
+  thr <- read.table(fthr, header = TRUE, sep = '\t')
   
   S <- colnames(refsig)
   nsig <- length(S)
@@ -117,7 +100,6 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
     if(!dir.exists(fl)) stop(paste0('Trained model for ',s,' cannot be found'))
     model <- tf$keras.models$load_model(fl)
     mp <- model$predict(xa, verbose = 0)
-#   if(ncol(mp)==2) mp <- log(mp[,2]/mp[,1])
     pr[, s] <- mp
     tmp <- thr[thr$S==s, c('Threshold', 'Precision.cutoff')]
     if(NROW(tmp)!=2) stop('Less/more than 2 cutoff exists in threshold file')
@@ -136,10 +118,7 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
   A <- E0[,-2:-1]*E0$M
   E1 <- E0
   E1[,-2:-1] <- E1[,-2:-1]*(A >= min.attr)
-# pole <- c('S10','S10a','S10b','S10d','SBS10a','SBS10b','SBS10d','SBS10')
-# apply extra filtering to POLE signatures based on minimum attribution
-# E1[,colnames(E1) %in% pole] <- E1[,colnames(E1) %in% pole]*(A[,colnames(A) %in% pole] >= min.attr.pole)
-       
+
   B <- cbind(E1[,1:2], tcall) # ternary calls
   pr <- cbind(E1[,1:2], pr)   # scores
   
@@ -155,7 +134,10 @@ DL.call <- function(catalog, cancer.type = 'pan_cancer', model.path = NA, ref.si
     pr <- pr[sid0, ]
   }
   
-  x <- list(exposure.fltrd = E1, ternary.call = B, exposure.raw = E0, 
-            ref.sig = refsig, score = pr, threshold=thr)
+  x <- list(score = pr,
+            ternary.call = B, 
+            exposure = E1, 
+            ref.sig = refsig, 
+            threshold=thr)
   return(x)
 }
