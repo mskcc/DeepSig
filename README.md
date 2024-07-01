@@ -91,7 +91,7 @@ As an example, the following script will generate outputs for the TCGA-OV sample
 
 The argument `token` is the 
 [personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
-in cases where the version of models are restricted-access. The above-use of `Sys.getev` assumes that the line
+in cases where the version of models are restricted-access. The above-use of `Sys.getenv` assumes that the line
 
     token = '[your_access_token]'
 
