@@ -69,13 +69,13 @@ is to one of the tissue of origin-based cancer types above. For rare cancer type
 for which signatures not in the reference might be expected (e.g., lung cancer samples with history of treatment with 
 temozolomide or hypermutation with POLE oncogenic mutations), `pancancer` model can be used. The drawback of `pancacer` model is
 that detection precision and recall are generally lower than cancer type-specific models.
-The `model.path` argument (by default `./.DeepSig`)
+
+To reduce the size of package, default models are not included in the package. The `model.path` argument (by default `./.DeepSig`)
 is the path where trained models can be found: directory containing SBS* subdirectories similar
 to those in [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast))
 and other associated files, `refsit.txt` and `threshold_cut.txt`) will be looked for at 
 `model.path/[cancer.type]` subdirectory. If this subdirectory does not exist, an attempt will be made to query the Github
-and download these files to the directory; to reduce the size of package, default models are not included and are downloaded 
-on demand via queries to [GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
+and download these files to the directory via queries to [GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
 [modelFetch()](https://github.com/mskcc/DeepSig/blob/main/R/modelFetch.R).
 This scheme also ensures that a second call for the same `cancer.type` will use the previously downloaded data.
 
