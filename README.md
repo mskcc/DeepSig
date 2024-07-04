@@ -189,7 +189,7 @@ options:
                         use a model for the specified cancer type
   -q, --quiet           Run quietly
 ```
-The arguments `CATALOG`, `CANCER_TYPER`, and `OUTPUT`specify the paths of input catalog data, cancer type, and output directory.\
+The arguments `CATALOG`, `CANCER_TYPER`, and `OUTPUT`specify the paths of input catalog data, cancer type, and output directory.
 
 
 ## Installation
