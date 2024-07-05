@@ -4,12 +4,9 @@
 #' @param cancer.type Cancer type
 #' @param model.path Directory path for trained models, If `NA`, defaults to
 #'          model corresponding to `cancer.type` and will query github API to download
-#' @param ref.sig File path for reference signatures. If `NA`, defaults
-#'          to `cancer.type`
-#' @param threshold File path for thresholds. If `NA`, defaults to `cancer.type`
 #' @param min.M Minimum no. of mutations
 #' @param min.attr Mininum attribution
-##' @param verbose Verbosity level
+#' @param verbose Verbosity level
 #' @param progress.bar Progress bar
 #' @param ... Other parameters to `modelFetch`
 #' @examples 
@@ -41,10 +38,10 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
   if(!cancer.type %in% known.types){  # Convert Oncotree code into cancer.type
     cancer.type <- oncoTree(onco = cancer.type)
   }
-  if(!cancer.type %in% known.types){
-    if(is.na(model.path) | is.na(threshold))
-    stop(paste0('Unknown cancer type ', cancer.type, 'requires model input'))
-  }
+#  if(!cancer.type %in% known.types){
+#    if(is.na(model.path) | is.na(threshold))
+#    stop(paste0('Unknown cancer type ', cancer.type, 'requires model input'))
+#  }
   
   mfile <- paste(model.path, cancer.type, sep = '/')
   if(!dir.exists(mfile)){
@@ -80,7 +77,7 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
   rownames(tcall) <- sid
   colnames(tcall) <- S
   
-  if(verbose > 0) cat('Making binary DL calls...\n')
+  if(verbose > 0) cat('Making ternary DL calls...\n')
   if(mode=='catalog')
     xa <- np$array(catalog)
   else{

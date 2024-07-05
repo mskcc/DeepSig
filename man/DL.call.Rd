@@ -34,11 +34,6 @@ model corresponding to `cancer.type` and will query github API to download}
 \item{min.attr}{Mininum attribution}
 
 \item{...}{Other parameters to `modelFetch`}
-
-\item{ref.sig}{File path for reference signatures. If `NA`, defaults
-to `cancer.type`}
-
-\item{threshold}{File path for thresholds. If `NA`, defaults to `cancer.type`}
 }
 \description{
 Use DL-trained Model to Make Signature Calls
