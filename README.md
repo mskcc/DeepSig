@@ -35,8 +35,7 @@ The function
     DL.call(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', min.attr = 1, ...)
 
 will find the pre-trained model corresponding to `cancer.type` and perform signature fitting and filtering.
-Except for `catalog` and `cancer.type`, other arguments will default to those for pre-trained models if 
-`cancer.type` is among those built-in:
+The `cancer.type` argument is used to choose among pre-trained models:
 
 Cancer type                    | cancer.type  | OncoTree              | ICGC/PCAWG | TCGA
 -------------------------------| ------------ | --------------------- | ---------- | ------
@@ -61,8 +60,7 @@ Input argument `cancer.type` will be checked against the second column above. If
 thought of as an [oncoTree](https://oncotree.mskcc.org/) code, and an attempt will be made to match it to `cancer.type`
 using [oncoTree()](https://github.com/mskcc/DeepSig/blob/main/R/oncotree.R). This matching of oncotree code to `cancer.type`
 is mostly based on the top-level `tissue` name of oncotree hierarchy, except for germ cell tumor and `sclc`.
-The table of reference signatures in a model can be looked up from pre-trained model directories (e.g., for breast cancer,
-see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)).
+If `cancer.type` does not match an oncotree code, it will be thought of as a custom model (see below).
 
 In general, the choice of which model to apply for a cohort should be based on the knowledge of how similar the cohort
 is to one of the tissue of origin-based cancer types above. For rare cancer types, cancer of unknown primary, and samples
@@ -73,8 +71,11 @@ that detection precision and recall are generally lower than cancer type-specifi
 To reduce the size of package, default models are not included in the package. The `model.path` argument (by default `./.DeepSig`)
 is the path where trained models can be found: directory containing SBS* subdirectories, similar
 to those in [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast),
-and other associated files (`refsit.txt` and `threshold_cut.txt`) will be looked for in
-`model.path/[cancer.type]` subdirectory. If this subdirectory does not exist, an attempt will be made to 
+and other associated files (`refsig.txt` and `threshold_cut.txt`) will be looked for in
+`model.path/[cancer.type]` subdirectory. 
+The table of reference signatures (`refsig.txt`) in a model can be looked up from pre-trained model directories (e.g., for breast cancer,
+see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)).
+If this main subdirectory does not exist, an attempt will be made to 
 download these files to the directory via queries to [GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
 [modelFetch()](https://github.com/mskcc/DeepSig/blob/main/R/modelFetch.R).
 This scheme also ensures that a second call for the same `cancer.type` will use the previously downloaded data. Runs without
