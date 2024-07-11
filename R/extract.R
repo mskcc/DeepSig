@@ -95,6 +95,14 @@ extractSig <- function(object, method = 'mle', screen = NA,
     }
     
     H <- t(Ha)
+    W <- nmf$W
+    if(is.null(rownames(W))) rownames(W) <- nt
+    if(is.null(colnames(W))) colnames(W) <- S <- paste0('S', seq(ncol(W)))
+    if(!is.s2a){
+      if(is.null(colnames(H))) colnames(H) <- S
+      if(is.null(rownames(H))) rownames(H) <- colnames(spectrum)
+    }   
+    signat(object) <- W
     expos(object) <- t(H)
     logLik(object) <- nmf$logLik
     
