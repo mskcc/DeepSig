@@ -1,3 +1,4 @@
+# To run DeepSig, edit the last command; also need to have ./DeepSig_0.9.8.tar.gz and ./.DeepSig directory (contains the models to run)
 FROM ubuntu:22.04
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -64,4 +65,8 @@ RUN Rscript -e 'remotes::install_version("restfulr", "0.0.15")'
 
 COPY . /
 RUN python3 -m venv .venv && ./.venv/bin/python -m pip install pandas h5py tensorflow==2.15.0 keras==2.15.0
-RUN /bin/bash -c 'source /.venv/bin/activate' && Rscript -e 'install.packages(pkgs = "/DeepSig_0.9.8.tar.gz", repos = NULL); library(DeepSig); data <- read.table(system.file("extdata", "tcga-brca_catalog.txt",package="DeepSig")); z <- DL.call(catalog = t(data), cancer.type = "breast")'
+RUN /bin/bash -c 'source /.venv/bin/activate' && Rscript -e  \
+  'install.packages(pkgs = "/DeepSig_0.9.8.tar.gz", repos = NULL);  \
+   library(DeepSig);  \
+   data <- read.table(system.file("extdata", "tcga-brca_catalog.txt",package="DeepSig"));  \
+   z <- DL.call(catalog = t(data), cancer.type = "breast")'
