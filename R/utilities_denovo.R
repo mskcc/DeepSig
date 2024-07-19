@@ -167,7 +167,7 @@ denovoProfiles <- function(object, ref.sig = 'cosmic'){
   
   K <- NCOL(sig)
   old.par <- par(mfrow=c(K,3), mar=c(1.5,3,2,1),lwd = 0.1, cex.axis = 0.6, 
-      cex.lab = 0.6, tck=-0.05, mgp = c(2,0.5,0), cex.main = 0.8)
+      cex.lab = 0.6, tck=-0.01, mgp = c(2,0.5,0), cex.main = 0.8)
   S <- colnames(sig)
   
   for(k in seq(K)){
