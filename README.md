@@ -48,10 +48,10 @@ Colorectal cancer              | colorect     | Bowel                 | Colorect
 Melanoma                       | skin         | Skin                  | Skin       | SKCM
 Glioma                         | cns          | CNS/Brain             | CNS        | GBM
 Non-small cell lung cancer     | nsclc        | Lung                  | Lung       | LUAD/LUSC
-Small cell lung cancer sclc    | sclc         | CSCLC                 |            |
-Head and neck cancer head_neck | head_neck    | Head and Neck         | Head       | HNSC
-Renal cell carcinoma kidney    | kidney       | Kidney                | Kidney     | KICH/KIRC/KIRP
-Endometrial cancer uterus      | uterus       | Uterus                | Uterus     | UCEC
+Small cell lung cancer         | sclc         | CSCLC                 |            |
+Head and neck cancer           | head_neck    | Head and Neck         | Head       | HNSC
+Renal cell carcinoma           | kidney       | Kidney                | Kidney     | KICH/KIRC/KIRP
+Endometrial cancer             | uterus       | Uterus                | Uterus     | UCEC
 Germ cell tumor                | gct          |                       | TGCT       |
 Pan-cancer model               | pancancer    |                       |            |
 
