@@ -99,7 +99,7 @@ in cases where the version of models are restricted-access. The above-use of `Sy
 has been placed in the file **~/.Renviron**.
 
 ### Output
-The return value is a list of 6 data frames as shown in the above example. The component **score** contains
+The return value is a list of 5 data frames as shown in the above example. The component **score** contains
 continuous scores for the presence of each sample-signature combination: 
 
 sid            | M    | SBS1    | SBS2.13  | SBS3     | SBS5    | SBS6  
