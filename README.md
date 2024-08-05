@@ -84,19 +84,11 @@ internet access will require pre-downloaded models whose path is provided as `mo
 As an example, the following script will generate outputs for the TCGA-OV samples using `ovary` pre-trained model:
 
     > library(DeepSig)
-    > token <- Sys.getenv('token')
     > xcat <- read.table(system.file('extdata', 'tcga_ov_xcat.txt', package = 'DeepSig'), header = TRUE, sep = '\t')
-    > z <- DL.call(catalog = t(xcat), cancer.type = 'ovarian', token = token)
+    > z <- DL.call(catalog = t(xcat), cancer.type = 'ovarian')
     > names(z)
       [1] "score"        "ternary.call" "exposure"     "ref.sig"      "threshold"
 
-The argument `token` is the 
-[personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
-in cases where the version of models are restricted-access. The above-use of `Sys.getenv` assumes that the line
-
-    token = '[your_access_token]'
-
-has been placed in the file **~/.Renviron**.
 
 ### Output
 The return value is a list of 5 data frames as shown in the above example. The component **score** contains
@@ -212,7 +204,8 @@ in `~/.R/MAKEVARS` on a Mac (check the links to make sure the correct version nu
 
 DL-based filtering requires [tensorflow](https://tensorflow.org/install) and [pandas](https://pandas.pydata.org/getting_started.html). In a Mac,
   
-    $ python3 -m pip install tensorflow pandas
+    $ python3 -m pip install pandas h5py tensorflow==2.15.0
+
 
 See the tensorflow install page for further information.
 
