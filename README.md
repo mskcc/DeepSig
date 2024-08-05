@@ -191,7 +191,7 @@ Compilation requires GNU Scientific Library [(GSL)](https://www.gnu.org/software
 
     $ sudo apt-get install libgsl-dev
     
-In a Mac,
+On a Mac,
 
     $ brew install gsl
 
