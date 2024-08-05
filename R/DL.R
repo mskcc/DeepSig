@@ -11,7 +11,7 @@
 #' @param ... Other parameters to `modelFetch`
 #' @examples 
 #' data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
-#' z <- DL.call(catalog = t(data), cancer.type = 'braest')
+#' z <- DL.call(catalog = t(data), cancer.type = 'breast')
 #' head(z$exposure.fltrd)
 #' 
 #' @export

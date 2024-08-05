@@ -40,7 +40,7 @@ Use DL-trained Model to Make Signature Calls
 }
 \examples{
 data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
-z <- DL.call(catalog = t(data), cancer.type = 'braest')
+z <- DL.call(catalog = t(data), cancer.type = 'breast')
 head(z$exposure.fltrd)
 
 }

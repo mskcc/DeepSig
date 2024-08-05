@@ -9,7 +9,6 @@ modelFetch(
   path = "/repos/mskcc/DeepSig/contents/inst/extdata/dlsig/",
   version = "v0.95",
   cancer.type = "breast",
-  token = NA,
   verbose = TRUE,
   model.path
 )
@@ -22,8 +21,6 @@ modelFetch(
 \item{version}{Version number}
 
 \item{cancer.type}{Cancer type}
-
-\item{token}{Authentication token; if `NA`, access attempted without one}
 
 \item{verbose}{Verbosity level}
 
