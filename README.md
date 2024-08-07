@@ -218,11 +218,11 @@ which will also install dependencies.
 
 ### Catalog matrix generation
 
-The catalog file as input data can be generated from MAF file using [maf2cat3()](https://github.com/mskcc/tempoSig/blob/master/man/maf2cat3.Rd). It requires a reference genome package, either [BSgenome.Hsapiens.UCSC.hg19](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg19) 
+The catalog file as input data can be generated from MAF file using [maf2cat3()](https://github.com/mskcc/DeepSig/blob/master/man/maf2cat3.Rd). It requires a reference genome package, either [BSgenome.Hsapiens.UCSC.hg19](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg19) 
 or [BSgenome.Hsapiens.UCSC.hg38](https://bioconductor.org/packages/BSgenome.Hsapiens.UCSC.hg38) installed:
 
     > library(BSgenome.Hsapiens.UCSC.hg19)
-    > maf <- system.file('extdata', 'brca.maf', package = 'tempoSig')
+    > maf <- system.file('extdata', 'brca.maf', package = 'DeepSig')
     > x <- maf2cat3(maf = maf, ref.genome = BSgenome.Hsapiens.UCSC.hg19)
     > write.table(x, file = 'brca_catalog.txt', row.names = TRUE, col.names = TRUE, sep = '\t', quote = F)
     
