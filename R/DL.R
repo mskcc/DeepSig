@@ -35,17 +35,15 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
                    'gct','skin','cns','head_neck','kidney','uterus', 'nsclc','liver',
                    'sclc', 'pancancer')
   
-  if(!cancer.type %in% known.types){  # Convert Oncotree code into cancer.type
-    cancer.type <- oncoTree(onco = cancer.type)
-  }
-#  if(!cancer.type %in% known.types){
-#    if(is.na(model.path) | is.na(threshold))
-#    stop(paste0('Unknown cancer type ', cancer.type, 'requires model input'))
-#  }
-  
   mfile <- paste(model.path, cancer.type, sep = '/')
-  if(!dir.exists(mfile)){
-     if(verbose) cat('Model for ', cancer.type, ' cannot be found. Downloading...\n')
+  if(!dir.exists(mfile)){ # need to download from github
+    cat('Model for ', cancer.type, ' cannot be found in model.path.\n')
+    if(!cancer.type %in% known.types){  # Convert Oncotree code into cancer.type
+      cancer.type <- oncoTree(onco = cancer.type)
+      if(!cancer.type %in% known.types) 
+        stop(paste0(cancer.type,' not among known types'))
+    }
+    if(verbose) cat('Downloading model for ', cancer.type, '...\n')
      if(!dir.exists(model.path)) dir.create(model.path)
      if(!dir.exists(mfile)) dir.create(mfile)
      modelFetch(cancer.type = cancer.type, verbose = verbose, 

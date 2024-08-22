@@ -173,9 +173,6 @@ maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE,
   chr <- unique(maf[,'Chromosome'])
   if(sum(!chr %in% seqnames(ref.genome)) > 0) stop('There is an unknown chromosome name')
   
-  ref.chr <- seqnames(ref.genome)
-  nchr <- length(chr)
-  
   if(progress.bar)
     pb <- txtProgressBar(style = 3)
 
@@ -188,6 +185,10 @@ maf2cat3 <- function(maf, ref.genome, fix.chr = TRUE, remove.duplicates = TRUE,
   xcat <- matrix(0, nrow = length(nt), ncol = nsample)
   rownames(xcat) <- nt
   colnames(xcat) <- tsb
+  
+  ref.chr <- seqnames(ref.genome)
+  ref.chr <- ref.chr[ref.chr %in% maf$Chromosome]
+  nchr <- length(ref.chr)
   
   for(k in seq_along(ref.chr)){
     kchr <- ref.chr[k]
