@@ -243,5 +243,5 @@ If you do not want to use R-interface, a command-line script is available, assum
 
 ### De novo inference
 
-See the [vignettes](https://github.com/mskcc/DeepSig/blob/main/old/denovo.html)
+See the [vignettes](https://html-preview.github.io/?url=https://github.com/mskcc/DeepSig/blob/main/old/denovo.html)
 
