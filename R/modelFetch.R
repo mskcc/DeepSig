@@ -19,7 +19,7 @@
 #' @export
 modelFetch <- function(url = 'https://api.github.com', 
                        path = '/repos/mskcc/DeepSig/contents/inst/extdata/dlsig/',
-                       version = 'v0.95', cancer.type = 'breast', 
+                       version = 'v0.98', cancer.type = 'breast', 
                        verbose = TRUE, model.path){
   if(is.na(model.path))
     model.path <- tempdir()
