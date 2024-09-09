@@ -33,7 +33,7 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
   cancer.type <- tolower(cancer.type) # no upper casing necessary
   known.types <- c('breast', 'ovary', 'prostate', 'pancreas', 'bladder','colorect',
                    'gct','skin','cns','head_neck','kidney','uterus', 'nsclc','liver',
-                   'sclc', 'pancancer')
+                   'sclc', 'esophagus','pancancer')
   
   mfile <- paste(model.path, cancer.type, sep = '/')
   if(!dir.exists(mfile)){ # need to download from github
