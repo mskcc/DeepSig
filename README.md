@@ -86,7 +86,7 @@ As an example, the following script will generate outputs for the TCGA-OV sample
 
     > library(DeepSig)
     > xcat <- read.table(system.file('extdata', 'tcga_ov_xcat.txt', package = 'DeepSig'), header = TRUE, sep = '\t')
-    > z <- DL.call(catalog = t(xcat), cancer.type = 'ovarian')
+    > z <- DL.call(catalog = t(xcat), cancer.type = 'ovary')
     > names(z)
       [1] "score"        "ternary.call" "exposure"     "ref.sig"      "threshold"
 
