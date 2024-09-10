@@ -53,7 +53,7 @@ Head and neck cancer           | head_neck    | Head and Neck         | Head    
 Renal cell carcinoma           | kidney       | Kidney                | Kidney     | KICH/KIRC/KIRP
 Endometrial cancer             | uterus       | Uterus                | Uterus     | UCEC
 Esophagogastric cancer         | esophagus    | Esophagus/Stomach     | Esophagus  | ESCA
-Germ cell tumor                | gct          |                       | TGCT       |
+Germ cell tumor                | gct          |                       |            | TGCT
 Pan-cancer model               | pancancer    |                       |            |
 
 
