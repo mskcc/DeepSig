@@ -6,6 +6,7 @@
 #'          model corresponding to `cancer.type` and will query github API to download
 #' @param min.M Minimum no. of mutations
 #' @param min.attr Mininum attribution
+#' @param npv Threshold parameters in terms of negative predictive value
 #' @param verbose Verbosity level
 #' @param progress.bar Progress bar
 #' @param ... Other parameters to `modelFetch`
@@ -18,7 +19,7 @@
 
 DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', 
                     mode = 'catalog', verbose = 1,  progress.bar = TRUE, 
-                    min.M = 1,  min.attr = 1, ...){
+                    min.M = 1,  min.attr = 1, npv = TRUE, ...){
   
   tf <- reticulate::import('tensorflow')
   pd <- reticulate::import('pandas')
@@ -64,7 +65,11 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
   if(!file.exists(frefsig)) stop(paste0(frefsig, ' does not exist'))
   refsig <- read.table(frefsig, header = TRUE, sep = '\t')
       
-  fthr <- paste(mfile, 'threshold_cut.txt', sep='/')
+  if(npv){
+    fthr <- paste(mfile, 'threshold_npv.txt', sep = '/')
+  } else{
+    fthr <- paste(mfile, 'threshold_cut.txt', sep='/')
+  }
   if(!file.exists(fthr)) stop(paste0(fthr, ' does not exist'))
   thr <- read.table(fthr, header = TRUE, sep = '\t')
   
@@ -96,12 +101,22 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
     model <- tf$keras.models$load_model(fl)
     mp <- model$predict(xa, verbose = 0)
     pr[, s] <- mp
-    tmp <- thr[thr$S==s, c('Threshold', 'Precision.cutoff')]
-    if(NROW(tmp)!=2) stop('Less/more than 2 cutoff exists in threshold file')
-    z1 <- tmp[tmp$Precision.cutoff == min(tmp$Precision.cutoff),'Threshold']
-    z2 <- tmp[tmp$Precision.cutoff == max(tmp$Precision.cutoff),'Threshold']
-    tcall[pr[, s] > z1, s] <- 'I'
-    tcall[pr[, s] > z2, s] <- 'P'
+    if(npv){
+      tmp <- thr[thr$S==s, c('measure', 'threshold')]
+      if(NROW(tmp)!=2) stop('Less/more than 2 cutoff exists in threshold file')
+      z1 <- tmp[tmp$measure == 'precision', 'threshold']
+      z0 <- min(c(z1, tmp[tmp$measure == 'npv', 'threshold']))
+      tcall[, s] <- 'I'
+      tcall[pr[, s] > z1, s] <- 'P'
+      tcall[pr[, s] <= z0, s] <- 'N'
+    } else{
+      tmp <- thr[thr$S==s, c('Threshold', 'Precision.cutoff')]
+      if(NROW(tmp)!=2) stop('Less/more than 2 cutoff exists in threshold file')
+      z1 <- tmp[tmp$Precision.cutoff == min(tmp$Precision.cutoff),'Threshold']
+      z2 <- tmp[tmp$Precision.cutoff == max(tmp$Precision.cutoff),'Threshold']
+      tcall[pr[, s] > z1, s] <- 'I'
+      tcall[pr[, s] > z2, s] <- 'P'
+    }
   }
 
   if(verbose > 0) cat('Fitting catalogs to ref. sigs...\n')
