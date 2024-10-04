@@ -96,7 +96,7 @@ The return value is a list of 5 data frames as shown in the above example. The c
 continuous scores for the presence of each sample-signature combination: 
 
 sid            | M    | SBS1    | SBS2.13  | SBS3     | SBS5    | SBS6  
--------------- | ----:| ------- | -------- | -------- | ------- | -----
+-------------- | ----:| ------: | -------: | -------: | ------: | -----:
 TCGA.61.2092   | 141  | 5.24    | 2.72     | 9.03     | 2.67    | -4195  
 TCGA.36.2540   | 10   | 2.93    | -1.39    | 1.57     | 1.57    | -73      
 TCGA.24.1467   | 9    | -0.09   | -1.44    | -0.50    | -0.50   | -849 
@@ -104,33 +104,35 @@ TCGA.24.1467   | 9    | -0.09   | -1.44    | -0.50    | -0.50   | -849
 where the columns show the repertore of reference signatures present in the **ovary** model being used.
 The columnn labeled **M** shows the total number of mutations for each sample.
 
-The threshold values accessbile with **threshold** are input data containing threshold scores with minimum
-estimated precision of 0.5 and 0.9:
+The threshold values accessbile with **threshold** are input data containing two threshold scores for minimum
+estimated precision and minimum negative predictive value (NPV), both of 0.9 for most cases, shown in column
+**min_value**:
 
-S        | engine  | Threshold | Recall | Precision | Precision.cutoff
--------- | ------- | --------- | ------ | --------- | -----------------
-SBS1     | mlp     | -0.83     | 0.62   | 0.5       | 0.5
-SBS1     | mlp     | 1.90      | 0.09   | 0.9       | 0.9
-SBS2.13  | mlp     | -0.93     | 0.65   | 0.5       | 0.5
-SBS2.13  | mlp     | 1.22      | 0.19   | 0.9       | 0.9
-SBS3     | mlp     | -Inf      | 1      | 0.75      | 0.5
-SBS3     | mlp     | 0.92      | 0.85   | 0.9       | 0.9
+S        | measure    | min_value | threshold | precision | recall | npv    | engine
+-------- | ---------- | --------- | --------: | --------: | -----: | -----: | -------
+SBS1     | precision  | 0.9       | 1.90      | 0.90      | 0.09   | 0.73   | mlp
+SBS1     | npv        | 0.9       | -2.55     | 0.29      | 0.99   | 0.90   | mlp
+SBS2.13  | precision  | 0.9       | 1.22      | 0.90      | 0.19   | 0.77   | mlp
+SBS2.13  | npv        | 0.9       | -1.43     | 0.38      | 0.85   | 0.90   | mlp
+SBS3     | precision  | 0.9       | 0.92      | 0.90      | 0.85   | 0.62   | mlp
+SBS3     | npv        | 0.9       | -1.24     | 0.77      | 1.00   | 0.90   | mlp
 
-The column `engine` is informational only: either `mlp` or `cnn`, the flavor of DL engines that was used
-for optimal performance in training. `Recall` and `Precision` list estimated recall and precision values.
+The columns **precision**, **recall**, and **npv** show the values attained at the thresholds.
+The column **engine** is informational only: either `mlp` or `cnn`, the flavor of DL engines that was used
+for optimal performance in training. 
 
 These threshold values are used to clip signature scores into discrete calls as shown in `ternary.call`:
 
 sid            | M    | SBS1    | SBS2.13  | SBS3
 -------------- | -----| ------- | -------- | -----------
 TCGA.61.2092   | 141  | P       | P        | P
-TCGA.36.2540   | 10   | P       | N        | P
+TCGA.36.2540   | 10   | P       | I        | P
 TCGA.24.1467   | 9    | I       | N        | I
 
 There are three types of calls:
 - `P` (positive): signature is present with minimum precision of 0.9
-- `N` (negative): signature is not present even with low minimum precision of 0.5
-- `I` (indeterminate): signature is present with minimum precision of 0.5 but not with 0.9
+- `N` (negative): signature is not present with minimum NPV of 0.9
+- `I` (indeterminate): signature is neither present with minimum precision of 0.9 nor absent with mininum NPV of 0.9
 
 The component `exposure` is a data frame of exposure proportions for all signatures with either `P` or `I` calls:
 
