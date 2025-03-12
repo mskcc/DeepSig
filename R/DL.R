@@ -7,6 +7,8 @@
 #' @param min.M Minimum no. of mutations
 #' @param min.attr Mininum attribution
 #' @param npv Threshold parameters in terms of negative predictive value
+#' @param pinE Ternary call types to include in exposure inference; either
+#'        \code{'P'} or \code{'PI'}.
 #' @param verbose Verbosity level
 #' @param progress.bar Progress bar
 #' @param ... Other parameters to `modelFetch`
@@ -19,8 +21,10 @@
 
 DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', 
                     mode = 'catalog', verbose = 1,  progress.bar = TRUE, 
-                    min.M = 1,  min.attr = 1, npv = TRUE, ...){
+                    min.M = 1,  min.attr = 1, npv = TRUE, pinE = 'PI',
+                    ...){
   
+#  Sys.setenv(TF_USE_LEGACY_KERAS = 1)
   tf <- reticulate::import('tensorflow')
   pd <- reticulate::import('pandas')
   np <- reticulate::import('numpy')
@@ -36,6 +40,8 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
                    'gct','skin','cns','head_neck','kidney','uterus', 'nsclc','liver',
                    'sclc', 'esophagus','pancancer')
   
+  if(pinE !='P' & pinE!='PI') stop('Invalid pinE')
+
   mfile <- paste(model.path, cancer.type, sep = '/')
   if(!dir.exists(mfile)){ # need to download from github
     cat('Model for ', cancer.type, ' cannot be found in model.path.\n')
@@ -121,7 +127,8 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
 
   if(verbose > 0) cat('Fitting catalogs to ref. sigs...\n')
   b <- DeepSig(data = t(catalog), signat = refsig)
-  screen <- as.matrix(tcall!='N')
+  if(pinE=='PI') screen <- as.matrix(tcall!='N')
+  else screen <- as.matrix(tcall=='P')
   b <- extractSig(b, method = 'mle', screen = screen, min.tmb = min.M, progress.bar = progress.bar)
   E0 <- cbind(data.frame(sid = sid, M = M), expos(b))
 

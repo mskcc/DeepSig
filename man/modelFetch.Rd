@@ -7,7 +7,7 @@
 modelFetch(
   url = "https://api.github.com",
   path = "/repos/mskcc/DeepSig/contents/inst/extdata/dlsig/",
-  version = "v0.95",
+  version = "v0.99",
   cancer.type = "breast",
   verbose = TRUE,
   model.path

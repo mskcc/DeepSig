@@ -34,8 +34,8 @@ extractSig(
 \arguments{
 \item{object}{Object of class \code{DeepSig}}
 
-\item{method}{Refitting method; \code{mle} for maximum likelihood (default) or
-\code{mutCone} for mutationalCone.}
+\item{method}{\code{mle} for maximum likelihood (default), \code{nmf} for 
+NMF (de novo inference), or \code{bnmf} for Bayesian NMF.}
 
 \item{screen}{Logical matrix of dimension \code{nsample x nsignature} whose
 rows indicate signatures to be included in refitting for samples}

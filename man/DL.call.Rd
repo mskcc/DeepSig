@@ -13,6 +13,7 @@ DL.call(
   progress.bar = TRUE,
   min.M = 1,
   min.attr = 1,
+  npv = TRUE,
   ...
 )
 }
@@ -32,6 +33,8 @@ model corresponding to `cancer.type` and will query github API to download}
 \item{min.M}{Minimum no. of mutations}
 
 \item{min.attr}{Mininum attribution}
+
+\item{npv}{Threshold parameters in terms of negative predictive value}
 
 \item{...}{Other parameters to `modelFetch`}
 }

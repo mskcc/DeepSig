@@ -3,8 +3,8 @@
 #' Use known signature list to find the most likely exposures in samples
 #'
 #' @param object Object of class \code{DeepSig}
-#' @param method Refitting method; \code{mle} for maximum likelihood (default) or
-#'               \code{mutCone} for mutationalCone.
+#' @param method \code{mle} for maximum likelihood (default), \code{nmf} for 
+#'        NMF (de novo inference), or \code{bnmf} for Bayesian NMF.
 #' @param screen Logical matrix of dimension \code{nsample x nsignature} whose
 #'        rows indicate signatures to be included in refitting for samples
 #' @param itmax Maximum number of iterations for maximum likelihood estimate
@@ -37,9 +37,8 @@ extractSig <- function(object, method = 'mle', screen = NA,
 
   if(Kmax < 2 ) stop('Kmax must be at least 2')
   if(!is(object, 'DeepSig')) stop('object is not of class DeepSig')
-  if(!method %in% c('nmf','bnmf','mle','mutcone')) stop('Unknown method')
+  if(!method %in% c('nmf','bnmf','mle')) stop('Unknown method')
   if(method != 'mle' & pvtest == 'lrt') stop('Likelihood ratio test is possible only with MLE')
-  if(method == 'mutcone' & compute.pval) stop('P-value in mutcone not implemented')
 
   spectrum <- catalog(object)
   ref <- signat(object)
@@ -142,9 +141,6 @@ extractSig <- function(object, method = 'mle', screen = NA,
       h[i, ] <- hi
       L[i] <- fi$loglik
     }
-    else
-      h[i, ] <- hi <- mutationalCone(catalog = spectrum[, i, drop=F], 
-                                     signature = ref, normalize = TRUE)
     if(compute.pval){
       perm <- matrix(0, nrow=nref, ncol=nperm)
       rownames(perm) <- signatures
