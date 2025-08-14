@@ -39,7 +39,7 @@ The `cancer.type` argument is used to choose among pre-trained models:
 
 Cancer type                    | cancer.type  | OncoTree              | ICGC/PCAWG | TCGA
 -------------------------------| ------------ | --------------------- | ---------- | ------
-Breat cancer                   | breast       | Breast                | Breast     | BRCA
+Breast cancer                   | breast       | Breast                | Breast     | BRCA
 Ovarian cancer                 | ovary        | Ovary/Fallopian Tube  | Ovary      | OV
 Prostate cancer                | prostate     | Prostate              | Prostate   | PRAD
 Pancreatic cancer              | pancreas     | Pancreas              | Pancreas  | PAAD
