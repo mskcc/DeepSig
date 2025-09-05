@@ -1,5 +1,15 @@
+DeepSig 1.0.0
+===============
+Changes (04/09/25):
+
+tf.keras model version changed to keras 3.
+python-3.12.0
+tensorflow 2.19.0
+
 DeepSig 0.9.9
 ===============
 Changes (10/04/24):
 
 Parameters based on precision and NPV (v0.99)
+
+

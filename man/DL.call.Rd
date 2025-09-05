@@ -14,6 +14,7 @@ DL.call(
   min.M = 1,
   min.attr = 1,
   npv = TRUE,
+  pinE = "PI",
   ...
 )
 }
@@ -35,6 +36,9 @@ model corresponding to `cancer.type` and will query github API to download}
 \item{min.attr}{Mininum attribution}
 
 \item{npv}{Threshold parameters in terms of negative predictive value}
+
+\item{pinE}{Ternary call types to include in exposure inference; either
+\code{'P'} or \code{'PI'}.}
 
 \item{...}{Other parameters to `modelFetch`}
 }

@@ -100,10 +100,9 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
   
   for(s in S){
     if(verbose > 0) cat(paste0(s,'...\n'))
-    fl <- paste0(mfile,'/',s)
-    if(!dir.exists(fl))
-    fl <- paste0(mfile, '/',s, '/', s)
-    if(!dir.exists(fl)) stop(paste0('Trained model for ',s,' cannot be found'))
+    fl <- paste0(mfile,'/',s,'.keras')
+    if(!file.exists(fl)) fl <- paste0(mfile, '/',s, '/', s,'.keras')
+    if(!file.exists(fl)) stop(paste0('Trained model for ',s,' cannot be found'))
     model <- tf$keras.models$load_model(fl)
     mp <- model$predict(xa, verbose = 0)
     pr[, s] <- mp
