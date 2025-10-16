@@ -32,29 +32,31 @@ Note: the output from [maf2cat3] needs to be transposed so that rows contain sam
 ## Main caller
 The function
 
-    DL.call(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', min.attr = 1, ...)
+    DL.call(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', platform = 'impact', min.attr = 1, ...)
 
 will find the pre-trained model corresponding to `cancer.type` and perform signature fitting and filtering.
 The `cancer.type` argument is used to choose among pre-trained models:
 
-Cancer type                    | cancer.type  | OncoTree              | ICGC/PCAWG | TCGA
--------------------------------| ------------ | --------------------- | ---------- | ------
-Breast cancer                   | breast       | Breast                | Breast     | BRCA
-Ovarian cancer                 | ovary        | Ovary/Fallopian Tube  | Ovary      | OV
-Prostate cancer                | prostate     | Prostate              | Prostate   | PRAD
-Pancreatic cancer              | pancreas     | Pancreas              | Pancreas  | PAAD
-Bladder cancer                 | bladder      | Bladder/Urinary Tract | Bladder    | BLCA
-Colorectal cancer              | colorect     | Bowel                 | Colorectal | COAD
-Melanoma                       | skin         | Skin                  | Skin       | SKCM
-Glioma                         | cns          | CNS/Brain             | CNS        | GBM
-Non-small cell lung cancer     | nsclc        | Lung                  | Lung       | LUAD/LUSC
-Small cell lung cancer         | sclc         | CSCLC                 |            |
-Head and neck cancer           | head_neck    | Head and Neck         | Head       | HNSC
-Renal cell carcinoma           | kidney       | Kidney                | Kidney     | KICH/KIRC/KIRP
-Endometrial cancer             | uterus       | Uterus                | Uterus     | UCEC
-Esophagogastric cancer         | esophagus    | Esophagus/Stomach     | Esophagus  | ESCA/STAD
-Germ cell tumor                | gct          |                       |            | TGCT
-Pan-cancer model               | pancancer    |                       |            |
+Cancer type                    | cancer.type  | OncoTree              | ICGC/PCAWG      | TCGA
+-------------------------------| ------------ | --------------------- | --------------- | ------
+Bladder cancer                 | bladder      | Bladder/Urinary Tract | Bladder         | BLCA
+Breast cancer                  | breast       | Breast                | Breast          | BRCA
+Glioma                         | cns          | CNS/Brain             | CNS             | GBM
+Colorectal cancer              | colorect     | Bowel                 | Colorectal      | COAD
+Esophagogastric cancer         | esophagus    | Esophagus/Stomach     | Esophagus       | ESCA/STAD
+Germ cell tumor                | gct          |                       |                 | TGCT
+Head and neck cancer           | head_neck    | Head and Neck         | Head            | HNSC
+Renal cell carcinoma           | kidney       | Kidney                | Kidney          | KICH/KIRC/KIRP
+Liver cancer                   | liver        | Liver                 | Liver           | LIHC
+Non-small cell lung cancer     | nsclc        | Lung                  | Lung            | LUAD/LUSC
+Ovarian cancer                 | ovary        | Ovary/Fallopian Tube  | Ovary           | OV
+Pancreatic cancer              | pancreas     | Pancreas              | Pancreas        | PAAD
+Prostate cancer                | prostate     | Prostate              | Prostate        | PRAD
+Sarcoma                        | sarcoma      | Soft Tissue           | Bone_SoftTissue | SARC
+Small cell lung cancer         | sclc         | CSCLC                 |                 |
+Melanoma                       | skin         | Skin                  | Skin            | SKCM
+Endometrial cancer             | uterus       | Uterus                | Uterus          | UCEC
+Pan-cancer model               | pancancer    |                       |                 |
 
 
 Input argument `cancer.type` will be checked against the second column above. If it does not match one, it will be 
@@ -62,6 +64,7 @@ thought of as an [oncoTree](https://oncotree.mskcc.org/) code, and an attempt wi
 using [oncoTree()](https://github.com/mskcc/DeepSig/blob/main/R/oncotree.R). This matching of oncotree code to `cancer.type`
 is mostly based on the top-level `tissue` name of oncotree hierarchy, except for germ cell tumor and `sclc`.
 If `cancer.type` does not match an oncotree code, it will be thought of as a custom model (see below).
+The argument `platform` is either `impact` (default) or `wes`, with the latter based on MSK-WES cohort.
 
 In general, the choice of which model to apply for a cohort should be based on the knowledge of how similar the cohort
 is to one of the tissue of origin-based cancer types above. For rare cancer types, cancer of unknown primary, and samples
@@ -71,16 +74,18 @@ that detection precision and recall are generally lower than cancer type-specifi
 
 To reduce the size of package, default models are not included in the package. The `model.path` argument (by default `./.DeepSig`)
 is the path where trained models can be found: directory containing SBS* subdirectories, similar
-to those in [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast),
+to those in [inst/extdata/dlsig/v1.0/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v1.0/breast),
 and other associated files (`refsig.txt` and `threshold_cut.txt`) will be looked for in
 `model.path/[cancer.type]` subdirectory. 
 The table of reference signatures (`refsig.txt`) in a model can be looked up from pre-trained model directories (e.g., for breast cancer,
-see [inst/extdata/dlsig/v0.95/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v0.95/breast)).
+see [inst/extdata/dlsig/v1.0/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/v1.0/breast)).
 If this main subdirectory does not exist, an attempt will be made to 
 download these files to the directory via queries to [GitHub REST API](https://docs.github.com/en/rest?api=&apiVersion=2022-11-28) with 
 [modelFetch()](https://github.com/mskcc/DeepSig/blob/main/R/modelFetch.R).
 This scheme also ensures that a second call for the same `cancer.type` will use the previously downloaded data. Runs without
 internet access will require pre-downloaded models whose path is provided as `model.path`.
+The corresponding WES model files are fetched from 
+[inst/extdata/dlsig/wes/v1.0/breast](https://github.com/mskcc/DeepSig/tree/main/inst/extdata/dlsig/wes/v1.0/breast).
 
 As an example, the following script will generate outputs for the TCGA-OV samples using `ovary` pre-trained model:
 
@@ -207,7 +212,7 @@ in `~/.R/MAKEVARS` on a Mac (check the links to make sure the correct version nu
 
 DL-based filtering requires [tensorflow](https://tensorflow.org/install) and [pandas](https://pandas.pydata.org/getting_started.html). In a Mac,
   
-    $ python3 -m pip install pandas h5py tensorflow==2.15.0
+    $ python3 -m pip install pandas h5py tensorflow
 
 
 See the tensorflow install page for further information.
@@ -215,7 +220,7 @@ See the tensorflow install page for further information.
 We currently recommend downloading a source tar.gz file and
 installing **DeepSig** via
 
-    > install.packages('DeepSig_v0.9.8.tar.gz', repos = NULL, dependencies = TRUE)
+    > install.packages('DeepSig_v1.0.1.tar.gz', repos = NULL, dependencies = TRUE)
 
 which will also install dependencies.
 
