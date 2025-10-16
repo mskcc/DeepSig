@@ -53,7 +53,7 @@ Ovarian cancer                 | ovary        | Ovary/Fallopian Tube  | Ovary   
 Pancreatic cancer              | pancreas     | Pancreas              | Pancreas        | PAAD
 Prostate cancer                | prostate     | Prostate              | Prostate        | PRAD
 Sarcoma                        | sarcoma      | Soft Tissue           | Bone_SoftTissue | SARC
-Small cell lung cancer         | sclc         | SCLC                  |                 |
+Small cell lung cancer         | sclc         | CSCLC                  |                 |
 Melanoma                       | skin         | Skin                  | Skin            | SKCM
 Endometrial cancer             | uterus       | Uterus                | Uterus          | UCEC
 Pan-cancer model               | pancancer    |                       |                 |
