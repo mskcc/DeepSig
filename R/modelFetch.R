@@ -19,8 +19,16 @@
 #' @export
 modelFetch <- function(url = 'https://api.github.com', 
                        path = '/repos/mskcc/DeepSig/contents/inst/extdata/dlsig/',
-                       version = 'v0.99', cancer.type = 'breast', 
+                       version = 'v1.0', cancer.type = 'breast', 
+                       platform = 'impact',
                        verbose = TRUE, model.path){
+  if(platform == 'wes' & 
+    path == '/repos/mskcc/DeepSig/contents/inst/extdata/dlsig/'){
+      path <- paste0(path, 'wes/')
+  }
+  if(!platform %in% c('impact','wes'))
+    stop(paste0('Unknown platform: ',platform))
+  
   if(is.na(model.path))
     model.path <- tempdir()
   req <- httr2::request(url) |>
@@ -45,7 +53,8 @@ modelFetch <- function(url = 'https://api.github.com',
     req2 <- httr2::request(url) |>
       httr2::req_url_path(paste0(path, version, '/', cancer.type,'/',zi$name))
     resp2 <- req2|> httr2::req_perform()
-    if((resp2 |> httr2::resp_status_desc())!='OK') stop(paste0('API query for ',cancer.type,': ', zi$name,' failed'))
+    if((resp2 |> httr2::resp_status_desc())!='OK') 
+      stop(paste0('API query for ',cancer.type,': ', zi$name,' failed'))
     z2 <- httr2::resp_body_json(resp2)
     for(zj in z2){
       if(zj$type=='file'){
@@ -56,10 +65,12 @@ modelFetch <- function(url = 'https://api.github.com',
       if(dir.exists(dir2)) system(paste0('rm -rf ',dir2))
       dir.create(dir2, showWarnings=FALSE)
       req3 <- httr2::request(url) |>
-        httr2::req_url_path(paste0(path, version, '/', cancer.type, '/', zi$name, '/',zj$name))
+        httr2::req_url_path(paste0(path, version, '/', 
+                                   cancer.type, '/', zi$name, '/',zj$name))
       resp3 <- req3 |> httr2::req_perform()
       if((resp3 |> httr2::resp_status_desc())!='OK')
-        stop(paste0('API query for ',cancer.type,': ', zi$name,'/',zj$name,' failed'))
+        stop(paste0('API query for ',
+                    cancer.type,': ', zi$name,'/',zj$name,' failed'))
       z3 <- httr2::resp_body_json(resp3)
       for(zk in z3){
         if(zk$type=='file'){

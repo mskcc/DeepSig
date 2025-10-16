@@ -3,7 +3,10 @@
 #'                in columns
 #' @param cancer.type Cancer type
 #' @param model.path Directory path for trained models, If `NA`, defaults to
-#'          model corresponding to `cancer.type` and will query github API to download
+#'          model corresponding to `cancer.type` and will query github API to 
+#'          download
+#' @param platform Types of sequencing data mutation catalog derives from; 
+#'        \code{c('impact', 'wes')}
 #' @param min.M Minimum no. of mutations
 #' @param min.attr Mininum attribution
 #' @param npv Threshold parameters in terms of negative predictive value
@@ -15,12 +18,13 @@
 #' @examples 
 #' data <- read.table(system.file('extdata', 'tcga-brca_catalog.txt',package='DeepSig'))
 #' z <- DL.call(catalog = t(data), cancer.type = 'breast')
-#' head(z$exposure.fltrd)
+#' head(z$exposure)
 #' 
 #' @export
 
 DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', 
-                    mode = 'catalog', verbose = 1,  progress.bar = TRUE, 
+                    platform = 'impact', mode = 'catalog', 
+                    verbose = 1,  progress.bar = TRUE, 
                     min.M = 1,  min.attr = 1, npv = TRUE, pinE = 'PI',
                     ...){
   
@@ -53,8 +57,8 @@ DL.call <- function(catalog, cancer.type = 'pancancer', model.path = './.DeepSig
     if(verbose) cat('Downloading model for ', cancer.type, '...\n')
      if(!dir.exists(model.path)) dir.create(model.path)
      if(!dir.exists(mfile)) dir.create(mfile)
-     modelFetch(cancer.type = cancer.type, verbose = verbose, 
-                         model.path = mfile, ...)
+     modelFetch(cancer.type = cancer.type, platform = platform, 
+                verbose = verbose, model.path = mfile, ...)
   }
   
   x0 <- catalog
