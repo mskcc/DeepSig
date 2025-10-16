@@ -32,7 +32,8 @@ Note: the output from [maf2cat3] needs to be transposed so that rows contain sam
 ## Main caller
 The function
 
-    DL.call(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', platform = 'impact', min.attr = 1, ...)
+    DL.call(catalog, cancer.type = 'pancancer', model.path = './.DeepSig', platform = 'impact', 
+            min.attr = 1, ...)
 
 will find the pre-trained model corresponding to `cancer.type` and perform signature fitting and filtering.
 The `cancer.type` argument is used to choose among pre-trained models:
